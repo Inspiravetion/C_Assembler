@@ -1,0 +1,18 @@
+// 2. Need more abstraction for running the commands
+
+// 3. need more abstraction for writing out to the output file
+
+
+/*////////////////////
+// Assembler Duties //
+//////////////////////
+
+1. determine what command needs to be run with what opperand
+
+2. translate commands into their machine language representative
+	->keeping up with references to immediates
+	->keeping up with register locations and offsetts
+
+3.printing machine code to an output file
+
+*/
