@@ -12,7 +12,10 @@ void Register_Disposable(void* d){
 		GARBAGE = ((void**) malloc(sizeof(void*) * GARBAGE_CAPACITY));
 	}
 	if(GARBAGE_COUNT == (GARBAGE_CAPACITY - 1)){
-		Extend_Array(GARBAGE, sizeof(void*), (GARBAGE_CAPACITY * 2));
+		void* newArr = realloc(GARBAGE, (sizeof(void*) * (GARBAGE_CAPACITY * 2)));
+		if(newArr){
+			GARBAGE = newArr;
+		}
 	}
 	GARBAGE[GARBAGE_COUNT] = d;
 	GARBAGE_COUNT++;

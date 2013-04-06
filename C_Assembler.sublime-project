@@ -1,0 +1,12 @@
+{
+	"folders":
+	[
+		{
+			"path": "/Users/Charlie/Projects/C_Assembler"
+		}
+	],
+	"sublimeclang_options":
+	[
+	  "-I${folder:${project_path:C_Assembler.sublime-project}}/**"
+	]
+}

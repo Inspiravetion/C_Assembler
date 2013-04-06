@@ -6,68 +6,74 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+#include "Janitor.h"
+#include "Static.h"
 
 /**
  * Struct for R_Type Instructions
  */
+typedef struct _R_Type R_Type;
+
 struct _R_Type {
-	const char* (*toString)();
-	const char* instruction;
+	char* (*toString)(R_Type* self);
+	const char* opcode;
 	const char* rs;
 	const char* rt;
 	const char* rd;
+	const char* sa;
 };
-
-typedef struct _R_Type R_Type;
 
 /**
  * Struct for I_Type Instructions
  */
+typedef struct _I_Type I_Type;
+
 struct _I_Type {
-	const char* (*toString)()
-	const char* instruction;
+	char* (*toString)(I_Type* self);
+	const char* opcode;
 	const char* rs;
 	const char* rt;
 	const char* imm_16;
 };
 
-typedef struct _I_Type I_Type;
-
 /**
  * Struct for J_Type Instructions
  */
+typedef struct _J_Type J_Type;
+
 struct _J_Type {
-	const char* (*toString)()
-	const char* instruction;
+	char* (*toString)(J_Type* self);
+	const char* opcode;
 	const char* target_26;
 };
 
-typedef struct _J_Type J_Type;
-
 /**
  * R_Type Instruction initializer function
- * @param instr the String instruction
+ * @param op    the String opcode
  * @param rs    the String rs
  * @param rt    the String rt
  * @param rd    the String rd
+ * @return R_Type* the R_Type created 
  */
-void Create_R(const char* instr, const char* rs, const char* rt, const char* rd);
+R_Type* New_R_Type(const char* op, const char* rs, const char* rt, const char* rd);
 
 /**
  * I_Type Instruction initializer function
- * @param instr  the String instruction
+ * @param op     the String opcode
  * @param rs     the String rs
  * @param rt     the String rt
  * @param imm_16 the String representation of the 16 bit immediate
+ * @return I_Type* the I_Type created
  */
-void Create_I(const char* instr, const char* rs, const char* rt, const char* imm_16);
+I_Type* New_I_Type(const char* op, const char* rs, const char* rt, const char* imm_16);
 
 /**
  * J_Type Instruction initializer function
- * @param instr     the String instruction
+ * @param op        the String opcode
  * @param target_26 the String representation of the 26 bit target address
+ * @return J_Type* the J_Type created
  */
-void Create_J(const char* instr, const char* target_26);
+J_Type* New_J_Type(const char* op, const char* target_26);
 
 
 #endif
