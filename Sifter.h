@@ -7,9 +7,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
-#include "Janitor.h"
 #include "Static.h"
-
+#include "Instruction_t.h"
 
 /**
  * Sifter Struct to bundle together a regex_t, an array of regmatch_t's, and 

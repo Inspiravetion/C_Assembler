@@ -15,6 +15,7 @@
 #define SLT_REGEX "slt[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
 #define SLL_REGEX "sll[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
 #define SRL_REGEX "srl[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
+#define JR_REGEX "jr[[:space:]](.*)"//rt, sa, and rd = 00000
 
 /**
  * I_Type Instruction RegExps (all digits are 16 bit immediates)
@@ -44,7 +45,6 @@
  * J_Type Instruction RegExps (1 param)
  */
 #define JAL_REGEX "jal[[:space:]](.*)"
-#define JR_REGEX "jr[[:space:]](.*)"
 #define J_REGEX "j[[:space:]](.*)"
 
 /**

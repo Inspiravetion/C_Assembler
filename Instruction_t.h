@@ -48,31 +48,10 @@ struct _J_Type {
 };
 
 /**
- * R_Type Instruction initializer function
- * @param op    the String opcode
- * @param rs    the String rs
- * @param rt    the String rt
- * @param rd    the String rd
- * @return R_Type* the R_Type created 
+ * Instruction Factory Methods
  */
-R_Type* New_R_Type(const char* op, const char* rs, const char* rt, const char* rd);
-
-/**
- * I_Type Instruction initializer function
- * @param op     the String opcode
- * @param rs     the String rs
- * @param rt     the String rt
- * @param imm_16 the String representation of the 16 bit immediate
- * @return I_Type* the I_Type created
- */
+R_Type* New_R_Type(const char* op, const char* rs, const char* rt, const char* rd, const char* sa);
 I_Type* New_I_Type(const char* op, const char* rs, const char* rt, const char* imm_16);
-
-/**
- * J_Type Instruction initializer function
- * @param op        the String opcode
- * @param target_26 the String representation of the 26 bit target address
- * @return J_Type* the J_Type created
- */
 J_Type* New_J_Type(const char* op, const char* target_26);
 
 
