@@ -198,7 +198,7 @@ Sifter** Config_Sifters(){
 	sifters[i] = New_Sifter(JR_REGEX, &JR_FUNC);
 	i++;
 
-	/*sifters[i] = New_Sifter(ADDI_REGEX, &ADDI_FUNC);
+	sifters[i] = New_Sifter(ADDI_REGEX, &ADDI_FUNC);
 	i++;
 
 	sifters[i] = New_Sifter(ADDIU_REGEX, &ADDIU_FUNC);
@@ -243,7 +243,7 @@ Sifter** Config_Sifters(){
 	sifters[i] = New_Sifter(LA_REGEX, &LA_FUNC);
 	i++;
 
-	sifters[i] = New_Sifter(LI_REGEX, &LI_FUNC);*/
+	sifters[i] = New_Sifter(LI_REGEX, &LI_FUNC);
 	return sifters;
 }
 

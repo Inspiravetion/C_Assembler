@@ -9,7 +9,7 @@ const char* Base_(Sifter* self, const char* source);
  * DO NOT FORGET TO FREE THE SIFTER WHEN YOU ARE DONE WITH IT
  */
 Sifter* New_Sifter(const char* exp, const char*(*func)(const char**, size_t)){
-	Sifter *sifter = malloc(sizeof(Sifter*));
+	Sifter *sifter = malloc(sizeof(Sifter));
 	sifter->strRegEx = exp;
 	if(regcomp(&(sifter->regEx), exp, REG_EXTENDED)){
 		printf("Could not compile regular expression\n");
