@@ -15,6 +15,7 @@ void Register_Disposable(void* d){
 		void* newArr = realloc(GARBAGE, (sizeof(void*) * (GARBAGE_CAPACITY * 2)));
 		if(newArr){
 			GARBAGE = newArr;
+			GARBAGE_CAPACITY = GARBAGE_CAPACITY * 2;
 		}
 	}
 	GARBAGE[GARBAGE_COUNT] = d;

@@ -180,7 +180,7 @@ Sifter** Config_Sifters(){
 	sifters[i] = New_Sifter(SUB_REGEX, &SUB_FUNC);
 	i++;
 
-	/*sifters[i] = New_Sifter(OR_REGEX, &OR_FUNC);
+	sifters[i] = New_Sifter(OR_REGEX, &OR_FUNC);
 	i++;
 
 	sifters[i] = New_Sifter(AND_REGEX, &AND_FUNC);
@@ -196,7 +196,7 @@ Sifter** Config_Sifters(){
 	i++;
 
 	sifters[i] = New_Sifter(JR_REGEX, &JR_FUNC);
-	i++;*/
+	i++;
 
 	/*sifters[i] = New_Sifter(ADDI_REGEX, &ADDI_FUNC);
 	i++;
