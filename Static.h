@@ -56,9 +56,9 @@
 /**
  * Processing Helpers
  */
-#define IS_REG "\\$(.*)"
-#define IS_REG_WITH_OFFSET "([[:digit:]]+)\\(\\$(.*)\\)"
-#define IS_IMM "([[:digit:]]+)"
+#define IS_REG_REGEX "\\$(.*)"
+#define IS_REG_WITH_OFFSET_REGEX "([[:digit:]]+)\\(\\$(.*)\\)"
+#define IS_IMM_REGEX "([[:digit:]]+)"
 
 ///////////////////////////////////////////////////////////////////////////////
 // OPCODE STRINGS                                                            //

@@ -1,5 +1,65 @@
 #include "Config.h"
 
+#define INSTRUCTION_COUNT 28
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//  Binary Conversion Sifters and Helpers                                    //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+
+const char* IS_REG(const char** args, size_t size);
+const char* IS_REG_WITH_OFFSET(const char** args, size_t size);
+const char* IS_IMM(const char** args, size_t size);
+
+#define REG_SIFTER New_Sifter(IS_REG_REGEX, &IS_REG)
+#define REG_WITH_OFFSET_SIFTER New_Sifter(IS_REG_WITH_OFFSET_REGEX, &IS_REG_WITH_OFFSET)
+#define IMM_SIFTER New_Sifter(IS_IMM_REGEX, &IS_IMM)
+
+const char* intToBinaryString(int num, int strLen) {
+    char* string = (char*) New_Array(sizeof(char), (strLen + 1));
+    int mask = 1, i = 0;
+    while(i < strLen){
+    	string[strLen - 1 - i] = (num & (mask << i)) ? '1' : '0';
+    	i++;
+    }
+    string[strLen] = '\0';
+    return string;
+}
+
+const char* IS_REG(const char** args, size_t size){
+	//convert args[1] to its proper binary register
+	return "why yes it is...";
+}
+
+const char* IS_REG_WITH_OFFSET(const char** args, size_t size){
+	//convert args[2] to its proper binary register plus its immediate args[1]
+	return "why yes it is...";
+}
+
+const char* IS_IMM(const char** args, size_t size){
+	int value = atoi(args[1]);
+	//this 5 should not be hardcoded
+	return intToBinaryString(value, 5);
+}
+
+const char* RESOLVE_EXP(const char* exp){
+	const char* result;
+	if(result = REG_WITH_OFFSET_SIFTER->Sift(REG_WITH_OFFSET_SIFTER, exp)){
+		return result;
+	}
+	else if(result = REG_SIFTER->Sift(REG_SIFTER, exp)){
+		return result;
+	}
+	else if(result = IMM_SIFTER->Sift(IMM_SIFTER, exp)){
+		return result;
+	}
+	else{
+		return exp;
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 //  Instruction Specific Functions                                           //
 //  have to process each argument to see if its                              //
@@ -8,8 +68,13 @@
 
 //R_Types----------------------------------------------------------------------
 const char* ADD_FUNC(const char** args, size_t size){
-	R_Type* instr = (R_Type*) 
-		New_R_Type(ADD_OPCODE, args[1], args[2], args[3], NULL);
+	R_Type* instr = (R_Type*) New_R_Type(
+		ADD_OPCODE, 
+		RESOLVE_EXP(args[1]), 
+		RESOLVE_EXP(args[2]), 
+		RESOLVE_EXP(args[3]), 
+		NULL
+	);
 	return instr->toString(instr);
 }
 
@@ -171,7 +236,7 @@ const char* J_FUNC(const char** args, size_t size){
  * @return Sifter** an array of sifters
  */
 Sifter** Config_Sifters(){
-	Sifter** sifters = (Sifter**) New_Array(sizeof(Sifter*), 28);
+	Sifter** sifters = (Sifter**) New_Array(sizeof(Sifter*), INSTRUCTION_COUNT);
 	int i = 0;
 
 	sifters[i] = New_Sifter(ADD_REGEX, &ADD_FUNC);
