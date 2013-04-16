@@ -32,14 +32,10 @@ Sifter* New_Sifter(const char* exp, const char*(*func)(const char**, size_t)){
  * @return        String the bit representation of the command or NULL if no match
  */
 const char* Base_(Sifter* self, const char* source){
-	// printf("Got into Base_()\n");
-	// printf("regex: %s, source: %s \n",self->regEx, source);
 	if(regexec(&(self->regEx), source, self->nGroups, self->captures, 
 		REG_EXTENDED) != 0){
-		printf("about to return null\n");
 		return NULL;
 	}
-	// printf("Got past regexec()\n");
 	return self->Custom(Sift_(source, self->captures, self->nGroups), self->nGroups);
 }
 
@@ -51,14 +47,13 @@ const char* Base_(Sifter* self, const char* source){
  * @return          String[] of matched substrings
  */
 const char** Sift_(const char* source, regmatch_t* captures, size_t size){
-	// printf("Got into Sift_()\n");
 	const char** container = ((const char**) New_Array(sizeof(char*), size));
 	int i = 0, low, high, length;
 	while((captures[i].rm_so != (size_t) -1) && (i < size)){
 		low = captures[i].rm_so;
 		high = captures[i].rm_eo;
 		length = high - low;
-		char* temp = ((char*) New_Array(sizeof(char*), length + 1));
+		char* temp = ((char*) New_Array(sizeof(char), length + 1));
 		strncat(temp, source + low, length);
 		container[i] = temp;
 		i++;

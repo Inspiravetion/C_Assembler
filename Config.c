@@ -1,6 +1,7 @@
 #include "Config.h"
 
 #define INSTRUCTION_COUNT 28
+#define INT_LENGTH 32
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,20 +41,23 @@ const char* IS_REG_WITH_OFFSET(const char** args, size_t size){
 
 const char* IS_IMM(const char** args, size_t size){
 	int value = atoi(args[1]);
-	//this 5 should not be hardcoded
-	return intToBinaryString(value, 5);
+	return intToBinaryString(value, INT_LENGTH);
 }
 
-const char* RESOLVE_EXP(const char* exp){
+const char* RESOLVE_EXP(const char* exp, int maxLen){
 	const char* result;
 	if(result = REG_WITH_OFFSET_SIFTER->Sift(REG_WITH_OFFSET_SIFTER, exp)){
+		//find out if this should return the binary representation of the
+		//register number plus the immediate or something else
 		return result;
 	}
 	else if(result = REG_SIFTER->Sift(REG_SIFTER, exp)){
 		return result;
 	}
 	else if(result = IMM_SIFTER->Sift(IMM_SIFTER, exp)){
-		return result;
+		char* trimmedString = (char*) New_Array(sizeof(char), maxLen + 1);
+		strncat(trimmedString, (result + INT_LENGTH - maxLen), maxLen);
+		return trimmedString;
 	}
 	else{
 		return exp;
@@ -70,152 +74,243 @@ const char* RESOLVE_EXP(const char* exp){
 const char* ADD_FUNC(const char** args, size_t size){
 	R_Type* instr = (R_Type*) New_R_Type(
 		ADD_OPCODE, 
-		RESOLVE_EXP(args[1]), 
-		RESOLVE_EXP(args[2]), 
-		RESOLVE_EXP(args[3]), 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 5), 
 		NULL
 	);
 	return instr->toString(instr);
 }
 
 const char* SUB_FUNC(const char** args, size_t size){
-	R_Type* instr = (R_Type*) 
-		New_R_Type(SUB_OPCODE, args[1], args[2], args[3], NULL);
+	R_Type* instr = (R_Type*) New_R_Type(
+		SUB_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 5),
+		NULL
+	);
 	return instr->toString(instr);
 }
 
 const char* OR_FUNC(const char** args, size_t size){
-	R_Type* instr = (R_Type*) 
-		New_R_Type(OR_OPCODE, args[1], args[2], args[3], NULL);
+	R_Type* instr = (R_Type*) New_R_Type(
+		OR_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 5),
+		NULL
+	);
 	return instr->toString(instr);
 }
 
 const char* AND_FUNC(const char** args, size_t size){
-	R_Type* instr = (R_Type*) 
-		New_R_Type(AND_OPCODE, args[1], args[2], args[3], NULL);
+	R_Type* instr = (R_Type*) New_R_Type(
+		AND_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 5),
+		NULL
+	);
 	return instr->toString(instr);
 }
 
 const char* SLT_FUNC(const char** args, size_t size){
-	R_Type* instr = (R_Type*) 
-		New_R_Type(SLT_OPCODE, args[1], args[2], args[3], NULL);
+	R_Type* instr = (R_Type*) New_R_Type(
+		SLT_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 5),
+		NULL
+	);
 	return instr->toString(instr);
 }
 
 const char* SLL_FUNC(const char** args, size_t size){
 	//sa may not be Null for this
-	R_Type* instr = (R_Type*) 
-		New_R_Type(SLL_OPCODE, args[1], args[2], args[3], NULL);
+	R_Type* instr = (R_Type*) New_R_Type(
+		SLL_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 5),
+		NULL
+	);
 	return instr->toString(instr);
 }
 
 const char* SRL_FUNC(const char** args, size_t size){
 	//sa may not be Null for this
-	R_Type* instr = (R_Type*) 
-		New_R_Type(SRL_OPCODE, args[1], args[2], args[3], NULL);
+	R_Type* instr = (R_Type*) New_R_Type(
+		SRL_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 5),
+		NULL
+	);
 	return instr->toString(instr);
 }
 
 const char* JR_FUNC(const char** args, size_t size){
-	R_Type* instr = (R_Type*) 
-		New_R_Type(JR_OPCODE, args[1], "00000", "00000", NULL);
+	R_Type* instr = (R_Type*) New_R_Type(
+		JR_OPCODE, 
+		RESOLVE_EXP(args[1], 5),
+		"00000", 
+		"00000",
+		NULL
+	);
 	return instr->toString(instr);
 }
 
 //I_Types----------------------------------------------------------------------
 const char* ADDI_FUNC(const char** args, size_t size){
-	I_Type* instr = (I_Type*) 
-		New_I_Type(ADDI_OPCODE, args[1], args[2], args[3]);
+	I_Type* instr = (I_Type*) New_I_Type(
+		ADDI_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 16)
+	);
 	return instr->toString(instr);
 }
 
 const char* ADDIU_FUNC(const char** args, size_t size){
-	I_Type* instr = (I_Type*) 
-		New_I_Type(ADDIU_OPCODE, args[1], args[2], args[3]);
+	I_Type* instr = (I_Type*) New_I_Type(
+		ADDIU_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 16)
+	);
 	return instr->toString(instr);
 }
 
 const char* ORI_FUNC(const char** args, size_t size){
-	I_Type* instr = (I_Type*) 
-		New_I_Type(ORI_OPCODE, args[1], args[2], args[3]);
+	I_Type* instr = (I_Type*) New_I_Type(
+		ORI_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 16)
+	);
 	return instr->toString(instr);
 }
 
 const char* ANDI_FUNC(const char** args, size_t size){
-	I_Type* instr = (I_Type*) 
-		New_I_Type(ANDI_OPCODE, args[1], args[2], args[3]);
+	I_Type* instr = (I_Type*) New_I_Type(
+		ANDI_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 16)
+	);
 	return instr->toString(instr);
 }
 
 const char* SLTI_FUNC(const char** args, size_t size){
-	I_Type* instr = (I_Type*) 
-		New_I_Type(SLTI_OPCODE, args[1], args[2], args[3]);
+	I_Type* instr = (I_Type*) New_I_Type(
+		SLTI_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 16)
+	);
 	return instr->toString(instr);
 }
 
 const char* BEQ_FUNC(const char** args, size_t size){
-	I_Type* instr = (I_Type*) 
-		New_I_Type(BEQ_OPCODE, args[1], args[2], args[3]);
+	I_Type* instr = (I_Type*) New_I_Type(
+		BEQ_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 16)
+	);
 	return instr->toString(instr);
 }
 
 const char* BNE_FUNC(const char** args, size_t size){
-	I_Type* instr = (I_Type*) 
-		New_I_Type(ADDI_OPCODE, args[1], args[2], args[3]);
+	I_Type* instr = (I_Type*) New_I_Type(
+		ADDI_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 16)
+	);
 	return instr->toString(instr);
 }
 
 const char* BLT_FUNC(const char** args, size_t size){
-	I_Type* instr = (I_Type*) 
-		New_I_Type(BLT_OPCODE, args[1], args[2], args[3]);
+	I_Type* instr = (I_Type*) New_I_Type(
+		BLT_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 16)
+	);
 	return instr->toString(instr);
 }
 
 const char* BLE_FUNC(const char** args, size_t size){
-	I_Type* instr = (I_Type*) 
-		New_I_Type(BLE_OPCODE, args[1], args[2], args[3]);
+	I_Type* instr = (I_Type*) New_I_Type(
+		BLE_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 16)
+	);
 	return instr->toString(instr);
 }
 
 const char* BLEZ_FUNC(const char** args, size_t size){
-	I_Type* instr = (I_Type*) 
-		New_I_Type(BLEZ_OPCODE, args[1], "00000", args[3]);
+	I_Type* instr = (I_Type*) New_I_Type(
+		BLEZ_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		"00000",
+		RESOLVE_EXP(args[3], 16)
+	);
 	return instr->toString(instr);
 }
 
 const char* BLTZ_FUNC(const char** args, size_t size){
-	I_Type* instr = (I_Type*) 
-		New_I_Type(BLTZ_OPCODE, args[1], "00000", args[3]);
+	I_Type* instr = (I_Type*) New_I_Type(
+		BLTZ_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		"00000",
+		RESOLVE_EXP(args[3], 16)
+	);
 	return instr->toString(instr);
 }
 
 const char* LUI_FUNC(const char** args, size_t size){
-	I_Type* instr = (I_Type*) 
-		New_I_Type(LUI_OPCODE, args[1], args[2], "0000000000000000");
+	I_Type* instr = (I_Type*) New_I_Type(
+		LUI_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5),
+		"0000000000000000"
+	);
 	return instr->toString(instr);
 }
 
 const char* LW_FUNC(const char** args, size_t size){
-	I_Type* instr = (I_Type*) 
-		New_I_Type(LW_OPCODE, args[1], args[2], args[3]);
+	I_Type* instr = (I_Type*) New_I_Type(
+		LW_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 16)
+	);
 	return instr->toString(instr);
 }
 
 const char* SW_FUNC(const char** args, size_t size){
-	I_Type* instr = (I_Type*) 
-		New_I_Type(SW_OPCODE, args[1], args[2], args[3]);
+	I_Type* instr = (I_Type*) New_I_Type(
+		SW_OPCODE, 
+		RESOLVE_EXP(args[1], 5), 
+		RESOLVE_EXP(args[2], 5), 
+		RESOLVE_EXP(args[3], 16)
+	);
 	return instr->toString(instr);
 }
 
 const char* LA_FUNC(const char** args, size_t size){
-	//not right
+	//not right...return the two pseudo instructions i a 64 bit string with a '\n in the middle'
 	I_Type* instr = (I_Type*) 
 		New_I_Type(LA_OPCODE, args[1], args[2], args[3]);
 	return instr->toString(instr);
 }
 
 const char* LI_FUNC(const char** args, size_t size){
-	//not right
+	//not right...return the two pseudo instructions i a 64 bit string with a '\n in the middle'
 	I_Type* instr = (I_Type*) 
 		New_I_Type(LI_OPCODE, args[1], args[2], args[3]);
 	return instr->toString(instr);
@@ -223,12 +318,18 @@ const char* LI_FUNC(const char** args, size_t size){
 
 //J_Types----------------------------------------------------------------------
 const char* JAL_FUNC(const char** args, size_t size){
-	J_Type* instr = (J_Type*) New_J_Type(JAL_OPCODE, args[1]);
+	J_Type* instr = (J_Type*) New_J_Type(
+		JAL_OPCODE, 
+		RESOLVE_EXP(args[1], 26)
+	);
 	return instr->toString(instr);
 }
 
 const char* J_FUNC(const char** args, size_t size){
-	J_Type* instr = (J_Type*) New_J_Type(J_OPCODE, args[1]);
+	J_Type* instr = (J_Type*) New_J_Type(
+		J_OPCODE, 
+		RESOLVE_EXP(args[1], 26)
+	);
 	return instr->toString(instr);
 }
 /**
