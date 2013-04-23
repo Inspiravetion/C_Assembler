@@ -1,9 +1,5 @@
 #include "Config.h"
 
-#define INSTRUCTION_COUNT 28
-#define INT_LENGTH 32
-
-
 ///////////////////////////////////////////////////////////////////////////////
 //                                                                           //
 //  Binary Conversion Sifters and Helpers                                    //
@@ -49,9 +45,11 @@ const char* RESOLVE_EXP(const char* exp, int maxLen){
 	if(result = REG_WITH_OFFSET_SIFTER->Sift(REG_WITH_OFFSET_SIFTER, exp)){
 		//find out if this should return the binary representation of the
 		//register number plus the immediate or something else
+		printf("%s\n", "is ofset with register");
 		return result;
 	}
 	else if(result = REG_SIFTER->Sift(REG_SIFTER, exp)){
+		printf("%s\n", "is register");
 		return result;
 	}
 	else if(result = IMM_SIFTER->Sift(IMM_SIFTER, exp)){

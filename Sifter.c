@@ -36,7 +36,9 @@ const char* Base_(Sifter* self, const char* source){
 		REG_EXTENDED) != 0){
 		return NULL;
 	}
-	return self->Custom(Sift_(source, self->captures, self->nGroups), self->nGroups);
+	char* out = self->Custom(Sift_(source, self->captures, self->nGroups), self->nGroups);
+	printf("%s\n", out);
+	return out;
 }
 
 /**
