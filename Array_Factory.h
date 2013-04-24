@@ -24,6 +24,17 @@ void Unregister_Disposable(void* d);
 void* New_Array(int typeSize, int Sz);
 
 /**
+ * Returns a new array that holds Sz number of objects
+ * of typeSize size, initializes all of its cells to NULL,
+ * and registers it to be disposed of at a later time
+ * @param typeSize int the size of each individual element 
+ * in the array
+ * @param Sz int the initial size of the array.
+ * @return void** an array that needs to be casted by caller
+ */
+void* New_Nulled_Array(int typeSize, int Sz);
+
+/**
  * Takes an array and attempts to extend its length. 
  * Returns true if successful and false otherwise.
  * Also makes sure the right pointer is registerted to 

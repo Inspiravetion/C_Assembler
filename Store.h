@@ -15,7 +15,7 @@ struct _Store_Bundle{
 typedef struct _Store Store;
 
 struct _Store{
-	Store_Bundle** Data;
+	Store_Bundle** table;
 	int capacity;
 	int usage;
 	int sizeIndex;
