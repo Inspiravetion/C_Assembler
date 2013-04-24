@@ -6,9 +6,8 @@
 	//->gotta store arrays, addresses, and immediates by name...3 different hashtables i think
 #define LOADFACTOR 0.7f
 
-
 int main(int argc, char* argv[]){
-	Sifter** sifters = Config_Sifters();
+	/*Sifter** sifters = Config_Sifters();
 	IO* io = New_IO("readfile.txt", "r", "writefile.txt", "w");
 
 	char* instr;
@@ -24,6 +23,9 @@ int main(int argc, char* argv[]){
 		}
 	}
 
-	Clean_Up_IO(io);
+	Clean_Up_IO(io);*/
+
+	
+
 	Clean_Up();
 }

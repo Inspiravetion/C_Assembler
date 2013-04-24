@@ -9,7 +9,7 @@ typedef struct _Store_Bundle Store_Bundle;
 
 struct _Store_Bundle{
 	const char* key;
-    int val;
+    intptr_t val;
 };
 
 typedef struct _Store Store;
@@ -19,8 +19,8 @@ struct _Store{
 	int capacity;
 	int usage;
 	int sizeIndex;
-    bool (*put)(Store* self, const char* key, int value);
-    int (*get)(Store* self, const char* key);
+    bool (*put)(Store* self, const char* key, intptr_t value);
+    intptr_t (*get)(Store* self, const char* key);
 };
 
 Store* New_Store();

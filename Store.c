@@ -6,7 +6,7 @@
 // 																			 //
 ///////////////////////////////////////////////////////////////////////////////
 
-static int tableSizes[15] = {1019, 2027, 4079, 8123, 16267, 32503, 65011, 
+static int tableSizes[16] = {7, 1019, 2027, 4079, 8123, 16267, 32503, 65011, 
 	130027, 260111, 520279, 1040387, 2080763, 4161539, 8323151, 16646323};
  
 #define LOADFACTOR 0.7f
@@ -17,7 +17,7 @@ static int tableSizes[15] = {1019, 2027, 4079, 8123, 16267, 32503, 65011,
 // 																			 //
 ///////////////////////////////////////////////////////////////////////////////
 
-Store_Bundle* New_Store_Bundle(const char* key, int value){
+Store_Bundle* New_Store_Bundle(const char* key, intptr_t value){
 	Store_Bundle* bundle = (Store_Bundle*) malloc(sizeof(Store_Bundle));
 	bundle->key = key;
 	bundle->val = value;
@@ -36,7 +36,7 @@ int hash(const char* key, int sizeIndex){
 	int length = strlen(key);
 	int i = 0;
 	while(i < length){
-		output = (output << 4) + key[i]; //this may not work
+		output = (output << 4) + key[i]; 
 		int hiBits = output & 0xF0000000;
 		if(hiBits){
 			output ^= hiBits >> 24;
@@ -61,13 +61,14 @@ void resize(Store* self){
 			}
 			i++;
 		}
+		self->capacity = tableSizes[self->sizeIndex];
 	}
 	else{
 		printf("resizing store array did not work\n");
 	}
 };
 
-bool put(Store* self, const char* key, int value){
+bool put(Store* self, const char* key, intptr_t value){
 	int index     = hash(key, self->sizeIndex);
 	bool inserted = false;
 	bool finished = false;
@@ -98,7 +99,7 @@ bool put(Store* self, const char* key, int value){
 	return inserted;
 };
 
-int get(Store* self, const char* key){
+intptr_t get(Store* self, const char* key){
 	int index = hash(key, self->sizeIndex);
 	int count = 0;
 	bool finished = false;
@@ -121,7 +122,7 @@ int get(Store* self, const char* key){
 Store* New_Store(){
 	Store* store = (Store*) malloc(sizeof(Store));
 	store->sizeIndex = 0;
-	store->capacity = 0;
+	store->capacity = tableSizes[store->sizeIndex];
 	store->usage = 0;
 	store->put = &put;
 	store->get = &get;

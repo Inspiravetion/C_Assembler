@@ -7,5 +7,6 @@
 #include "Instruction_t.h"
 #include "Config.h"
 #include "IO.h"
+#include "Multi_Store.h"
 
 #endif
