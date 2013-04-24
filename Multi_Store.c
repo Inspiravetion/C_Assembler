@@ -30,7 +30,9 @@ void add_string(Multi_Store* self, const char* key, const char* val){
 };
 
 void add_immediate(Multi_Store* self, const char* key, int val){
-	self->immediate_store->put(self->immediate_store, key, (intptr_t) val);
+	int* intptr = (int*) New_Array(sizeof(int), 1);
+	intptr[0] = val;
+	self->immediate_store->put(self->immediate_store, key, (intptr_t) intptr);
 };
 
 Array_Bundle* get_array(Multi_Store* self, const char* key){
@@ -44,8 +46,9 @@ const char* get_string(Multi_Store* self, const char* key){
 };
 
 int get_immediate(Multi_Store* self, const char* key){
-	return (int)
+	int* intptr = (int*) 
 		self->immediate_store->get(self->immediate_store, key);
+	return intptr ? intptr[0] : -1;
 };
 
 Multi_Store* New_Multi_Store(){

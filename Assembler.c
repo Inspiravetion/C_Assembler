@@ -50,6 +50,7 @@ int main(int argc, char* argv[]){
 	printf("%d\n", store.get_immediate(&store, "immediate"));
 
 	printf("this shouldnt work...%s\n", store.get_string(&store, "strdfging"));
+	printf("%d\n", store.get_immediate(&store, "immedsfdiate"));
 
 	Clean_Up();
 }
