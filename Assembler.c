@@ -25,7 +25,31 @@ int main(int argc, char* argv[]){
 
 	Clean_Up_IO(io);*/
 
-	
+	int* arr = (int*) New_Array(sizeof(int), 10);
+	int i = 0;
+	while(i < 10){
+		arr[i] = i;
+		i++;
+	}
+	const char* str = "String Arguments";
+	int imm = 1234;
+
+	Multi_Store store = *(New_Multi_Store());
+	store.add_array(&store, "array", arr, 10);
+	store.add_string(&store, "string", str);
+	store.add_immediate(&store, "immediate", imm);
+
+	Array_Bundle* arr_result = store.get_array(&store, "array");
+	int j = 0;
+	while(j < arr_result->length){
+		printf("%d : %d\n", j, arr_result->array[j]);
+		j++;
+	}
+
+	printf("%s\n", store.get_string(&store, "string"));
+	printf("%d\n", store.get_immediate(&store, "immediate"));
+
+	printf("this shouldnt work...%s\n", store.get_string(&store, "strdfging"));
 
 	Clean_Up();
 }

@@ -105,7 +105,7 @@ intptr_t get(Store* self, const char* key){
 	bool finished = false;
 	while(!finished){
 		if(!(self->table[index])){
-			return -1;
+			return NULL;
 		}
 		if(strcmp(self->table[index]->key, key) == 0){
 			return self->table[index]->val;
@@ -116,7 +116,7 @@ intptr_t get(Store* self, const char* key){
 				% tableSizes[self->sizeIndex]);
 		}
 	}
-	return -1;
+	return NULL;
 };
 
 Store* New_Store(){
