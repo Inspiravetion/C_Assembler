@@ -6,6 +6,7 @@
 #include <limits.h>
 #include "Janitor.h"
 #include "Array_Factory.h"
+#include "Sifter.h"
 
 typedef struct _IO IO;
 
@@ -14,6 +15,8 @@ struct _IO{
 	FILE* out;
     char* (*readline)(IO* io);
     void (*print)(IO* io, char* data);
+	bool (*in_rewind)(IO* io);
+	bool (*seek_pattern)(IO* io, Sifter* s);
 };
 
 void Clean_Up_IO(IO* io);

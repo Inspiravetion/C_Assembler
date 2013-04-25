@@ -6,11 +6,23 @@
 	//->gotta store arrays, addresses, and immediates by name...3 different hashtables i think
 #define LOADFACTOR 0.7f
 
-int main(int argc, char* argv[]){
-	/*Sifter** sifters = Config_Sifters();
-	IO* io = New_IO("readfile.txt", "r", "writefile.txt", "w");
+void store_data_section(IO* io, Multi_Store* store){
+	io->seek_pattern(io, DATA_SECTION_SIFTER);
+	char* result;
+	while(result = io->readline(io)){
+		printf("%s\n", result);
+	}
+	//read the rest of the lines...introduce some Sifter.addMiddleWare() function 
+	//where you give it a function pointer and have it called so you can store the data
+}
 
-	char* instr;
+
+int main(int argc, char* argv[]){
+	Sifter** sifters = Config_Sifters();
+	IO* io = New_IO("readfile.txt", "r", "writefile.txt", "w");
+	Multi_Store* store = New_Multi_Store();
+
+	/*char* instr;
 	char* binInstr;
 	while(instr = io->readline(io)){
 		int i = 0;
@@ -23,7 +35,7 @@ int main(int argc, char* argv[]){
 		}
 	}
 
-	Clean_Up_IO(io);*/
+	Clean_Up_IO(io);
 
 	int* arr = (int*) New_Array(sizeof(int), 10);
 	int i = 0;
@@ -50,7 +62,9 @@ int main(int argc, char* argv[]){
 	printf("%d\n", store.get_immediate(&store, "immediate"));
 
 	printf("this shouldnt work...%s\n", store.get_string(&store, "strdfging"));
-	printf("%d\n", store.get_immediate(&store, "immedsfdiate"));
+	printf("%d\n", store.get_immediate(&store, "immedsfdiate"));*/
+
+	store_data_section(io, store);
 
 	Clean_Up();
 }

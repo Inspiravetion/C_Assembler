@@ -25,6 +25,4 @@ struct _Store{
 
 Store* New_Store();
 
-//use these to make specific stores where the return of get is a certain pointer type
-
 #endif

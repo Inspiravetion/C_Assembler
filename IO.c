@@ -18,6 +18,21 @@ char* readline(IO* io){
 	return NULL;
 }
 
+bool seek_pattern(IO* io, Sifter* s){
+	io->in_rewind(io);
+	char* result;
+	while((result = io->readline(io))){
+		if(s->Sift(s, result)){
+			return true;
+		}
+	}
+	return false;
+};
+
+bool in_rewind(IO* io){
+	return fseek(io->in, 0, SEEK_SET);
+};
+
 void print(IO* io, char* data){
 	if(io->out){
 		fprintf(io->out, "%s\n", data);
@@ -25,12 +40,12 @@ void print(IO* io, char* data){
 	else{
 		printf("out FILE* does not exist...\n");
 	}
-}
+};
 
 void Clean_Up_IO(IO* io){
 	fclose(io->in);
 	fclose(io->out);
-}
+};
 
 IO* New_IO(char* fileIn, char* inFlags, char* fileOut, char* outFlags){
 	IO* io  = (IO*) malloc(sizeof(IO));
@@ -38,6 +53,8 @@ IO* New_IO(char* fileIn, char* inFlags, char* fileOut, char* outFlags){
 	io->out = fopen(fileOut, outFlags);
 	io->readline = &readline;
 	io->print = &print;
+	io->in_rewind = &in_rewind;
+	io->seek_pattern = &seek_pattern;
 	Register_Disposable(io);
 	return io;
-}
+};
