@@ -59,7 +59,15 @@
 #define IS_REG_REGEX "\\$(.*)"
 #define IS_REG_WITH_OFFSET_REGEX "([[:digit:]]+)\\(\\$(.*)\\)"
 #define IS_IMM_REGEX "([[:digit:]]+)"
-#define DATA_SECTION_REGEX "[[:space:]]*.data[[:space:]]*"
+#define DATA_SECTION_REGEX "[[:space:]]*\\.data[[:space:]]*"
+
+/**
+ * Data Store Helpers
+ */
+#define ARRAY_DATA_REGEX "[[:space:]]*(.*):[[:space:]]*\\.word[[:space:]]*(.*):(.*)" 
+#define STRING_DATA_REGEX "[[:space:]]*(.*):[[:space:]]*\\.asciiz[[:space:]]*\"(.*)\"*"
+#define IMMEDIATE_DATA_REGEX "[[:space:]]*(.*):[[:space:]]*\\.word[[:space:]]*(.*)"
+
 
 ///////////////////////////////////////////////////////////////////////////////
 // OPCODE STRINGS                                                            //

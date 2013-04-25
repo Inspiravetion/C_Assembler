@@ -52,6 +52,7 @@ const char* IS_IMM(const char** args, size_t size){
 
 const char* RESOLVE_EXP(const char* exp, int maxLen){
 	const char* result;
+	//GOING TO NEED TO CHECK IF THIS EXPRESSION IS IN THE STORE ALREADY
 	if(result = REG_WITH_OFFSET_SIFTER->Sift(REG_WITH_OFFSET_SIFTER, exp)){
 		//find out if this should return the binary representation of the
 		//register number plus the immediate or something else
@@ -344,7 +345,7 @@ const char* J_FUNC(const char** args, size_t size){
  * Creates and returns an array of all the necessary sifters
  * @return Sifter** an array of sifters
  */
-Sifter** Config_Sifters(){
+Sifter** Config_Text_Sifters(){
 	Sifter** sifters = (Sifter**) New_Array(sizeof(Sifter*), INSTRUCTION_COUNT);
 	int i = 0;
 
@@ -420,4 +421,59 @@ Sifter** Config_Sifters(){
 	sifters[i] = New_Sifter(LI_REGEX, &LI_FUNC);
 	return sifters;
 }
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//  Data Section Sifter Setup                                                //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+
+void STORE_ARRAY_MIDDLEWARE(Multi_Store* store, const char** strArr){
+	const char* key = strArr[1];
+	int def_val = atoi(strArr[2]);
+	int size = atoi(strArr[3]);
+	int* value = (int*) New_Array(sizeof(int), size);
+	int i = 0;
+	while(i < size){
+		value[i] = def_val;
+		i++;
+	}
+	store->add_array(store, key, value, size);
+}
+
+void STORE_STRING_MIDDLEWARE(Multi_Store* store, const char** strArr){
+	store->add_string(store, strArr[1], strArr[2]);
+}
+
+void STORE_IMMEDIATE_MIDDLEWARE(Multi_Store* store, const char** strArr){
+	printf("Immediate Data\n");
+}
+
+const char* RETURN_KEY(const char** args, size_t size){
+	return args[1];
+}
+
+Sifter** Config_Data_Sifters(Multi_Store* store){
+	Sifter** sifters = (Sifter**) New_Array(sizeof(Sifter*), DATA_TYPE_COUNT);
+	int i = 0;
+
+	sifters[i] = New_Sifter(ARRAY_DATA_REGEX, &RETURN_KEY);
+	i++;
+
+	sifters[i] = New_Sifter(STRING_DATA_REGEX, &RETURN_KEY);
+	i++;
+
+	sifters[i] = New_Sifter(IMMEDIATE_DATA_REGEX, &RETURN_KEY);
+
+	return sifters;
+}
+
+
+
+
+
+
+
+
+
 

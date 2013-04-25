@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include "Static.h"
 #include "Instruction_t.h"
+#include "Multi_Store.h"
 
 /**
  * Sifter Struct to bundle together a regex_t, an array of regmatch_t's, and 
@@ -22,8 +23,10 @@ struct _Sifter{
     regex_t regEx;
     regmatch_t* captures;
     size_t nGroups;
+    Multi_Store* store;
    	const char* (*Custom)(const char** strArr, size_t numGroups);
     const char* (*Sift)(Sifter* self, const char* compStr);
+    void (*Store_Middleware)(Multi_Store* store, const char** strArr);
 };
 
 /**

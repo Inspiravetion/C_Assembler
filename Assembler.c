@@ -4,23 +4,36 @@
 //Still gotta figure out how to represent registers with/without ofsetts
 //Still gotta deal with the data portion of the document...some type of store
 	//->gotta store arrays, addresses, and immediates by name...3 different hashtables i think
-#define LOADFACTOR 0.7f
+//do the symbol table table command
+//implement a mechanism for offsets relative to the file in hex
 
-void store_data_section(IO* io, Multi_Store* store){
+void Store_Data_Section(IO* io, Multi_Store* store){
 	io->seek_pattern(io, DATA_SECTION_SIFTER);
+	Sifter** sifters = Config_Data_Sifters(store);
 	char* result;
 	while(result = io->readline(io)){
-		printf("%s\n", result);
+		int i = 0;
+		char* key;
+		while(i < DATA_TYPE_COUNT){
+			if(key = sifters[i]->Sift(sifters[i], result)){
+				//have Sift() return the key...then get the 
+				//offset from io and add it to the store here
+				printf("%s\n", key);
+				break;
+			}
+			i++;
+		}
 	}
-	//read the rest of the lines...introduce some Sifter.addMiddleWare() function 
-	//where you give it a function pointer and have it called so you can store the data
 }
 
 
 int main(int argc, char* argv[]){
-	Sifter** sifters = Config_Sifters();
+	Sifter** sifters = Config_Text_Sifters();
 	IO* io = New_IO("readfile.txt", "r", "writefile.txt", "w");
 	Multi_Store* store = New_Multi_Store();
+	Store_Data_Section(io, store);
+
+
 
 	/*char* instr;
 	char* binInstr;
@@ -35,7 +48,6 @@ int main(int argc, char* argv[]){
 		}
 	}
 
-	Clean_Up_IO(io);
 
 	int* arr = (int*) New_Array(sizeof(int), 10);
 	int i = 0;
@@ -64,7 +76,6 @@ int main(int argc, char* argv[]){
 	printf("this shouldnt work...%s\n", store.get_string(&store, "strdfging"));
 	printf("%d\n", store.get_immediate(&store, "immedsfdiate"));*/
 
-	store_data_section(io, store);
-
+	Clean_Up_IO(io);
 	Clean_Up();
 }

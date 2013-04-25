@@ -17,6 +17,8 @@ Sifter* New_Sifter(const char* exp, const char*(*func)(const char**, size_t)){
 	}
 	sifter->Sift = &Base_;
 	sifter->Custom = func;
+	sifter->Store_Middleware = NULL;
+	sifter->store = NULL;
 	sifter->nGroups = sifter->regEx.re_nsub + 1;
 	sifter->captures = malloc(sifter->nGroups * sizeof(regmatch_t));
 	Register_Disposable(sifter->captures);
@@ -36,8 +38,12 @@ const char* Base_(Sifter* self, const char* source){
 		REG_EXTENDED) != 0){
 		return NULL;
 	}
-	char* out = self->Custom(Sift_(source, self->captures, self->nGroups), self->nGroups);
-	printf("%s\n", out);
+	const char** args = Sift_(source, self->captures, self->nGroups);
+	if(self->store && self->Store_Middleware){
+		self->Store_Middleware(self->store, args);
+	}
+	char* out = self->Custom(args, self->nGroups);
+	// printf("%s\n", out);
 	return out;
 }
 
