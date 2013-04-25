@@ -24,9 +24,8 @@ struct _Sifter{
     regmatch_t* captures;
     size_t nGroups;
     Multi_Store* store;
-   	const char* (*Custom)(const char** strArr, size_t numGroups);
+   	const char* (*Custom)(Multi_Store* store, const char** strArr, size_t numGroups);
     const char* (*Sift)(Sifter* self, const char* compStr);
-    void (*Store_Middleware)(Multi_Store* store, const char** strArr);
 };
 
 /**
@@ -36,6 +35,6 @@ struct _Sifter{
  * regular expression executed on a given String and outputs the correct 
  * String representation of the 32 bit instruction.
  */
-Sifter* New_Sifter(const char* exp, const char*(*func)(const char**, size_t));
+Sifter* New_Sifter(Multi_Store* store, const char* exp, const char*(*func)(Multi_Store* store, const char**, size_t));
 
 #endif

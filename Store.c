@@ -119,6 +119,18 @@ intptr_t get(Store* self, const char* key){
 	return NULL;
 };
 
+void display(Store* store){
+	int i = 0;
+	printf(" %-s       |    %s\n", "Symbol", "Address");
+	printf("---------------------------\n");
+	while(i < store->capacity){
+		if(store->table[i]){
+			printf("[%-12s : 0x%08X]\n", store->table[i]->key, ((int*) store->table[i]->val)[0]);
+		}
+		i++;
+	}
+}
+
 Store* New_Store(){
 	Store* store = (Store*) malloc(sizeof(Store));
 	store->sizeIndex = 0;
@@ -126,6 +138,7 @@ Store* New_Store(){
 	store->usage = 0;
 	store->put = &put;
 	store->get = &get;
+	store->display = &display;
 	store->table = (Store_Bundle**) 
 		New_Nulled_Array(sizeof(Store_Bundle*), tableSizes[store->sizeIndex]);
 	Register_Disposable(store);

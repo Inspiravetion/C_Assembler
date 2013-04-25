@@ -8,7 +8,7 @@ const char* Base_(Sifter* self, const char* source);
  * Creates a new sifter with the given regexp and Custom processing function
  * DO NOT FORGET TO FREE THE SIFTER WHEN YOU ARE DONE WITH IT
  */
-Sifter* New_Sifter(const char* exp, const char*(*func)(const char**, size_t)){
+Sifter* New_Sifter(Multi_Store* store, const char* exp, const char*(*func)(Multi_Store* store, const char**, size_t)){
 	Sifter *sifter = malloc(sizeof(Sifter));
 	sifter->strRegEx = exp;
 	if(regcomp(&(sifter->regEx), exp, REG_EXTENDED)){
@@ -17,8 +17,7 @@ Sifter* New_Sifter(const char* exp, const char*(*func)(const char**, size_t)){
 	}
 	sifter->Sift = &Base_;
 	sifter->Custom = func;
-	sifter->Store_Middleware = NULL;
-	sifter->store = NULL;
+	sifter->store = store;
 	sifter->nGroups = sifter->regEx.re_nsub + 1;
 	sifter->captures = malloc(sifter->nGroups * sizeof(regmatch_t));
 	Register_Disposable(sifter->captures);
@@ -39,10 +38,7 @@ const char* Base_(Sifter* self, const char* source){
 		return NULL;
 	}
 	const char** args = Sift_(source, self->captures, self->nGroups);
-	if(self->store && self->Store_Middleware){
-		self->Store_Middleware(self->store, args);
-	}
-	char* out = self->Custom(args, self->nGroups);
+	char* out = self->Custom(self->store, args, self->nGroups);
 	// printf("%s\n", out);
 	return out;
 }

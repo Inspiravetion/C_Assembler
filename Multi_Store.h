@@ -26,6 +26,7 @@ struct _Multi_Store{
     Array_Bundle* (*get_array)(Multi_Store* self, const char* key);
     const char* (*get_string)(Multi_Store* self, const char* key);
 	int (*get_immediate)(Multi_Store* self, const char* key);
+	void (*display_immediate_table)(Multi_Store* self);
 };
 
 Multi_Store* New_Multi_Store();

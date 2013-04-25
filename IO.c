@@ -8,6 +8,8 @@ char* readline(IO* io){
 			if(container[end] = '\n'){
 				container[end] = '\0';			
 			}
+			int step = (((end + 1) * sizeof(char) /*bytes*/) * 8) /*bits*/;
+			io->offset += step;
 			return container;
 		}
 		else{
@@ -23,13 +25,19 @@ bool seek_pattern(IO* io, Sifter* s){
 	char* result;
 	while((result = io->readline(io))){
 		if(s->Sift(s, result)){
+			io->offset = 0;
 			return true;
 		}
 	}
 	return false;
 };
 
+int get_curr_offset(IO* io){
+	return io->offset;
+}
+
 bool in_rewind(IO* io){
+	io->offset = 0;
 	return fseek(io->in, 0, SEEK_SET);
 };
 
@@ -55,6 +63,8 @@ IO* New_IO(char* fileIn, char* inFlags, char* fileOut, char* outFlags){
 	io->print = &print;
 	io->in_rewind = &in_rewind;
 	io->seek_pattern = &seek_pattern;
+	io->get_curr_offset = &get_curr_offset;
+	io->offset = 0;
 	Register_Disposable(io);
 	return io;
 };

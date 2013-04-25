@@ -21,6 +21,7 @@ struct _Store{
 	int sizeIndex;
     bool (*put)(Store* self, const char* key, intptr_t value);
     intptr_t (*get)(Store* self, const char* key);
+	void (*display)(Store* store);
 };
 
 Store* New_Store();

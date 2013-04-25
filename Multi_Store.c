@@ -51,6 +51,10 @@ int get_immediate(Multi_Store* self, const char* key){
 	return intptr ? intptr[0] : -1;
 };
 
+void display_immediate_table(Multi_Store* self){
+	self->immediate_store->display(self->immediate_store);
+};
+
 Multi_Store* New_Multi_Store(){
 	Multi_Store* store = (Multi_Store*) malloc(sizeof(Multi_Store));
 	store->array_store     = New_Store();
@@ -62,6 +66,7 @@ Multi_Store* New_Multi_Store(){
 	store->get_array     = &get_array;
 	store->get_string    = &get_string;
 	store->get_immediate = &get_immediate;
+	store->display_immediate_table = &display_immediate_table;
 	Register_Disposable(store);
 	return store;
 };

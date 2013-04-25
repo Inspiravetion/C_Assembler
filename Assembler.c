@@ -2,40 +2,42 @@
 
 //Still gotta fix the sudo instructions and ones with shifts
 //Still gotta figure out how to represent registers with/without ofsetts
-//Still gotta deal with the data portion of the document...some type of store
-	//->gotta store arrays, addresses, and immediates by name...3 different hashtables i think
-//do the symbol table table command
 //implement a mechanism for offsets relative to the file in hex
 
 void Store_Data_Section(IO* io, Multi_Store* store){
 	io->seek_pattern(io, DATA_SECTION_SIFTER);
 	Sifter** sifters = Config_Data_Sifters(store);
 	char* result;
+	int begOfLine = io->get_curr_offset(io);
 	while(result = io->readline(io)){
 		int i = 0;
 		char* key;
 		while(i < DATA_TYPE_COUNT){
 			if(key = sifters[i]->Sift(sifters[i], result)){
-				//have Sift() return the key...then get the 
-				//offset from io and add it to the store here
-				printf("%s\n", key);
+				store->add_immediate(store, key, DATA_SECTION_BASE_ADDRESS + begOfLine);
 				break;
 			}
 			i++;
 		}
+		begOfLine = io->get_curr_offset(io);
 	}
-}
+	io->in_rewind(io);
+};
+
+void display_symbol_table(Multi_Store* store){
+	store->display_immediate_table(store);
+};
 
 
 int main(int argc, char* argv[]){
-	Sifter** sifters = Config_Text_Sifters();
 	IO* io = New_IO("readfile.txt", "r", "writefile.txt", "w");
 	Multi_Store* store = New_Multi_Store();
+	Sifter** sifters = Config_Text_Sifters(store);
 	Store_Data_Section(io, store);
 
+	display_symbol_table(store);
 
-
-	/*char* instr;
+	char* instr;
 	char* binInstr;
 	while(instr = io->readline(io)){
 		int i = 0;
@@ -48,7 +50,7 @@ int main(int argc, char* argv[]){
 		}
 	}
 
-
+	/*
 	int* arr = (int*) New_Array(sizeof(int), 10);
 	int i = 0;
 	while(i < 10){
