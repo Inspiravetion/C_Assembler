@@ -8,8 +8,9 @@
 
 #define INSTRUCTION_COUNT 28
 #define INT_LENGTH 32
-#define DATA_TYPE_COUNT 3
+#define DATA_TYPE_COUNT 4
 #define DATA_SECTION_BASE_ADDRESS 0x00002000
+#define TEXT_SECTION_BASE_ADDRESS 0x00000000
 
 Sifter** Config_Text_Sifters(Multi_Store* store);
 Sifter** Config_Data_Sifters();

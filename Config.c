@@ -27,7 +27,7 @@ static char* registers[REGISTER_COUNT] = {"$zero", "$at", "$v0", "$v1", "$a0",
 void store_registers(Multi_Store* store){
 	int i = 0;
 	while(i < REGISTER_COUNT){
-		store->add_immediate(store, registers[i], i);
+		store->add_register(store, registers[i], i);
 		i++;
 	}
 };
@@ -102,7 +102,7 @@ const char* RESOLVE_EXP(Multi_Store* store, const char* exp, int maxLen){
 		return result;
 	}
 	else if(result = EXP_SIFTERS[1]->Sift(EXP_SIFTERS[1], exp)){
-		int address = store->get_immediate(store, result);
+		int address = store->get_register(store, result);
 		return intToBinaryString(address, maxLen);
 	}
 	else if(result = EXP_SIFTERS[2]->Sift(EXP_SIFTERS[2], exp)){
@@ -294,7 +294,8 @@ const char* BLT_FUNC(Multi_Store* store, const char** args, size_t size){
 		RESOLVE_EXP(store, args[2], 5), 
 		RESOLVE_EXP(store, args[3], 16)
 	);
-	return instr->toString(instr);
+	// return instr->toString(instr);
+	return "BLT instruction";
 }
 
 //sudo TODO
@@ -305,7 +306,8 @@ const char* BLE_FUNC(Multi_Store* store, const char** args, size_t size){
 		RESOLVE_EXP(store, args[2], 5), 
 		RESOLVE_EXP(store, args[3], 16)
 	);
-	return instr->toString(instr);
+	// return instr->toString(instr);
+	return "BLE instruction";
 }
 //Hardcoded to only take immediate...could be dangerous
 const char* BLEZ_FUNC(Multi_Store* store, const char** args, size_t size){
@@ -362,14 +364,16 @@ const char* LA_FUNC(Multi_Store* store, const char** args, size_t size){
 	//not right...return the two pseudo instructions i a 64 bit string with a '\n in the middle'
 	I_Type* instr = (I_Type*) 
 		New_I_Type(LA_OPCODE, args[1], args[2], args[3]);
-	return instr->toString(instr);
+	// return instr->toString(instr);
+	return "LA instruction";
 }
 
 const char* LI_FUNC(Multi_Store* store, const char** args, size_t size){
 	//not right...return the two pseudo instructions i a 64 bit string with a '\n in the middle'
 	I_Type* instr = (I_Type*) 
 		New_I_Type(LI_OPCODE, args[1], args[2], args[3]);
-	return instr->toString(instr);
+	// return instr->toString(instr);
+	return "LI instruction";
 }
 
 //J_Types----------------------------------------------------------------------
@@ -535,6 +539,9 @@ Sifter** Config_Data_Sifters(){
 	i++;
 
 	sifters[i] = New_Sifter(NULL, IMMEDIATE_DATA_REGEX, &RETURN_KEY);
+	i++;
+
+	sifters[i] = New_Sifter(NULL, LABEL_REGEX, &RETURN_KEY);	
 
 	return sifters;
 }

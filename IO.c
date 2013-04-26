@@ -9,7 +9,7 @@ char* readline(IO* io){
 				container[end] = '\0';			
 			}
 			int step = (((end + 1) * sizeof(char) /*bytes*/) * 8) /*bits*/;
-			io->offset += step;
+			io->in_offset += step;
 			return container;
 		}
 		else{
@@ -20,24 +20,16 @@ char* readline(IO* io){
 	return NULL;
 }
 
-bool seek_pattern(IO* io, Sifter* s){
-	io->in_rewind(io);
-	char* result;
-	while((result = io->readline(io))){
-		if(s->Sift(s, result)){
-			io->offset = 0;
-			return true;
-		}
-	}
-	return false;
-};
+void reset_in_offset(IO* io){
+	io->in_offset = 0;
+}
 
 int get_curr_offset(IO* io){
-	return io->offset;
+	return io->in_offset;
 }
 
 bool in_rewind(IO* io){
-	io->offset = 0;
+	reset_in_offset(io);
 	return fseek(io->in, 0, SEEK_SET);
 };
 
@@ -49,6 +41,8 @@ void print(IO* io, char* data){
 		printf("out FILE* does not exist...\n");
 	}
 };
+
+
 
 void Clean_Up_IO(IO* io){
 	fclose(io->in);
@@ -62,9 +56,9 @@ IO* New_IO(char* fileIn, char* inFlags, char* fileOut, char* outFlags){
 	io->readline = &readline;
 	io->print = &print;
 	io->in_rewind = &in_rewind;
-	io->seek_pattern = &seek_pattern;
 	io->get_curr_offset = &get_curr_offset;
-	io->offset = 0;
+	io->reset_in_offset = &reset_in_offset;
+	io->in_offset = 0;
 	Register_Disposable(io);
 	return io;
 };

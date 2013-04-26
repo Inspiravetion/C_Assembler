@@ -19,13 +19,15 @@ struct _Multi_Store{
 	Store* array_store;
 	Store* string_store;
 	Store* immediate_store;
-	//for this ure gunna have to make an array bundle to keep the array pointer and size together
+	Store* register_store;
     void (*add_array)(Multi_Store* self, const char* key, int* val, int length);
     void (*add_string)(Multi_Store* self, const char* key, const char* val);
     void (*add_immediate)(Multi_Store* self, const char* key, int val);
+    void (*add_register)(Multi_Store* self, const char* key, int val);
     Array_Bundle* (*get_array)(Multi_Store* self, const char* key);
     const char* (*get_string)(Multi_Store* self, const char* key);
 	int (*get_immediate)(Multi_Store* self, const char* key);
+	int (*get_register)(Multi_Store* self, const char* key);
 	void (*display_immediate_table)(Multi_Store* self);
 };
 

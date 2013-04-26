@@ -35,6 +35,12 @@ void add_immediate(Multi_Store* self, const char* key, int val){
 	self->immediate_store->put(self->immediate_store, key, (intptr_t) intptr);
 };
 
+void add_register(Multi_Store* self, const char* key, int val){
+	int* intptr = (int*) New_Array(sizeof(int), 1);
+	intptr[0] = val;
+	self->register_store->put(self->register_store, key, (intptr_t) intptr);
+};
+
 Array_Bundle* get_array(Multi_Store* self, const char* key){
 	return (Array_Bundle*) 
 		self->array_store->get(self->array_store, key);
@@ -51,6 +57,12 @@ int get_immediate(Multi_Store* self, const char* key){
 	return intptr ? intptr[0] : -1;
 };
 
+int get_register(Multi_Store* self, const char* key){
+	int* intptr = (int*) 
+		self->register_store->get(self->register_store, key);
+	return intptr ? intptr[0] : -1;
+}
+
 void display_immediate_table(Multi_Store* self){
 	self->immediate_store->display(self->immediate_store);
 };
@@ -60,12 +72,15 @@ Multi_Store* New_Multi_Store(){
 	store->array_store     = New_Store();
 	store->string_store    = New_Store();
 	store->immediate_store = New_Store();
+	store->register_store = New_Store();
 	store->add_array     = &add_array;
 	store->add_string    = &add_string;
 	store->add_immediate = &add_immediate;
 	store->get_array     = &get_array;
 	store->get_string    = &get_string;
 	store->get_immediate = &get_immediate;
+	store->add_register = &add_register;
+	store->get_register = &get_register;
 	store->display_immediate_table = &display_immediate_table;
 	Register_Disposable(store);
 	return store;

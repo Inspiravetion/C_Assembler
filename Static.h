@@ -26,7 +26,7 @@
 #define ANDI_REGEX "andi[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
 #define SLTI_REGEX "slti[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
 #define BEQ_REGEX "beq[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
-#define BNE_REGEX "bne[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
+#define BNE_REGEX "bne[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)[[:space:]]*#*"
 #define BLT_REGEX "blt[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
 #define BLE_REGEX "ble[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
 #define BLEZ_REGEX "blez[[:space:]](.*),[[:space:]]([[:digit:]]+)" //rt defaults to 00000
@@ -67,7 +67,7 @@
 #define ARRAY_DATA_REGEX "[[:space:]]*(.*):[[:space:]]*\\.word[[:space:]]*(.*):(.*)" 
 #define STRING_DATA_REGEX "[[:space:]]*(.*):[[:space:]]*\\.asciiz[[:space:]]*\"(.*)\"*"
 #define IMMEDIATE_DATA_REGEX "[[:space:]]*(.*):[[:space:]]*\\.word[[:space:]]*(.*)"
-
+#define LABEL_REGEX "[[:space:]]*(.*):[[:space:]]*"
 
 ///////////////////////////////////////////////////////////////////////////////
 // OPCODE STRINGS                                                            //

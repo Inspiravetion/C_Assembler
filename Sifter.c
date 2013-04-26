@@ -38,9 +38,8 @@ const char* Base_(Sifter* self, const char* source){
 		return NULL;
 	}
 	const char** args = Sift_(source, self->captures, self->nGroups);
-	char* out = self->Custom(self->store, args, self->nGroups);
-	// printf("%s\n", out);
-	return out;
+	char* customString = self->Custom(self->store, args, self->nGroups);
+	return customString;
 }
 
 /**

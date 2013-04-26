@@ -1,20 +1,30 @@
 #include "Assembler.h"
 
 //Still gotta fix the sudo instructions and ones with shifts
-//Still gotta figure out how to represent registers with/without ofsetts
-//implement a mechanism for offsets relative to the file in hex
+//index labels in text portion
+//figure out of the IS_REG_WITH_OFFSET should be removed
+//from RESOLVE_EXP()
+//handle command line...test
+//be able to dump the .data section...be glad you didn't delete all that other code
 
-void Store_Data_Section(IO* io, Multi_Store* store){
-	io->seek_pattern(io, DATA_SECTION_SIFTER);
+
+
+void Store_Symbols(IO* io, Multi_Store* store){
+	io->in_rewind(io);
 	Sifter** sifters = Config_Data_Sifters(store);
 	char* result;
 	int begOfLine = io->get_curr_offset(io);
+	int base = TEXT_SECTION_BASE_ADDRESS;
 	while(result = io->readline(io)){
+		if(DATA_SECTION_SIFTER->Sift(DATA_SECTION_SIFTER, result)){
+			io->reset_in_offset(io);
+			base = DATA_SECTION_BASE_ADDRESS;
+		}
 		int i = 0;
 		char* key;
 		while(i < DATA_TYPE_COUNT){
 			if(key = sifters[i]->Sift(sifters[i], result)){
-				store->add_immediate(store, key, DATA_SECTION_BASE_ADDRESS + begOfLine);
+				store->add_immediate(store, key, base + begOfLine);
 				break;
 			}
 			i++;
@@ -30,12 +40,12 @@ void display_symbol_table(Multi_Store* store){
 
 
 int main(int argc, char* argv[]){
-	IO* io = New_IO("readfile.txt", "r", "writefile.txt", "w");
+	IO* io = New_IO("adder.txt", "r", "writefile.txt", "w");
 	Multi_Store* store = New_Multi_Store();
 	Sifter** sifters = Config_Text_Sifters(store);
 	store_registers(store);
 	init_exp_sifters(store);
-	Store_Data_Section(io, store);
+	Store_Symbols(io, store);
 
 	display_symbol_table(store);
 
@@ -45,6 +55,7 @@ int main(int argc, char* argv[]){
 		int i = 0;
 		while(i < INSTRUCTION_COUNT){
 			if(binInstr = (char*)(sifters[i])->Sift(sifters[i], instr)){
+				// io->print(io, instr); //not perminent
 				io->print(io, binInstr);
 				break;
 			}
