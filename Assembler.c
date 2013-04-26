@@ -55,6 +55,7 @@ int main(int argc, char* argv[]){
 		int i = 0;
 		while(i < INSTRUCTION_COUNT){
 			if(binInstr = (char*)(sifters[i])->Sift(sifters[i], instr)){
+				printf("%s\n", binInstr);
 				// io->print(io, instr); //not perminent
 				io->print(io, binInstr);
 				break;

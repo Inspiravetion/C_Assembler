@@ -76,15 +76,15 @@ const char* intToBinaryString(int num, int strLen) {
 }
 
 const char* IS_REG(Multi_Store* store, const char** args, size_t size){
-	printf("%s\n", args[1]);
+	// printf("%s\n", args[1]);
 	// printf("%s\n", args[2]);
 	return args[1];
 }
 
 const char* IS_REG_WITH_OFFSET(Multi_Store* store, const char** args, size_t size){
 	//convert args[2] to its proper binary register plus its immediate args[1]
-	printf("%s\n", args[1]);
-	printf("%s\n", args[2]);
+	// printf("%s\n", args[1]);
+	// printf("%s\n", args[2]);
 	return "why yes it is...";
 }
 
@@ -286,29 +286,16 @@ const char* BNE_FUNC(Multi_Store* store, const char** args, size_t size){
 	return instr->toString(instr);
 }
 
-//sudo TODO
-const char* BLT_FUNC(Multi_Store* store, const char** args, size_t size){
+const char* BLTZ_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
-		BLT_OPCODE, 
+		BLTZ_OPCODE, 
+		NULL,
 		RESOLVE_EXP(store, args[1], 5), 
-		RESOLVE_EXP(store, args[2], 5), 
-		RESOLVE_EXP(store, args[3], 16)
+		RESOLVE_EXP(store, args[2], 16)
 	);
-	// return instr->toString(instr);
-	return "BLT instruction";
+	return instr->toString(instr);
 }
 
-//sudo TODO
-const char* BLE_FUNC(Multi_Store* store, const char** args, size_t size){
-	I_Type* instr = (I_Type*) New_I_Type(
-		BLE_OPCODE, 
-		RESOLVE_EXP(store, args[1], 5), 
-		RESOLVE_EXP(store, args[2], 5), 
-		RESOLVE_EXP(store, args[3], 16)
-	);
-	// return instr->toString(instr);
-	return "BLE instruction";
-}
 //Hardcoded to only take immediate...could be dangerous
 const char* BLEZ_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
@@ -320,14 +307,52 @@ const char* BLEZ_FUNC(Multi_Store* store, const char** args, size_t size){
 	return instr->toString(instr);
 }
 
-const char* BLTZ_FUNC(Multi_Store* store, const char** args, size_t size){
-	I_Type* instr = (I_Type*) New_I_Type(
-		BLTZ_OPCODE, 
+const char* BLT_FUNC(Multi_Store* store, const char** args, size_t size){
+	const char* rs = args[1];
+	const char* rt = args[2];
+	const char* offset = args[3];
+	char* sudoInstr = (char*) New_Array(sizeof(char), 66);
+	const char** subArgs[4] = {
 		NULL,
-		RESOLVE_EXP(store, args[1], 5), 
-		RESOLVE_EXP(store, args[2], 16)
-	);
-	return instr->toString(instr);
+		"$at",
+		rs,
+		rt
+	};
+	const char* first_half = SUB_FUNC(store, subArgs, size);
+	const char** bltzArgs[3] = {
+		NULL,
+		"$at",
+		offset
+	};
+	const char* second_half = BLTZ_FUNC(store, bltzArgs, size);
+	strcat(sudoInstr, first_half);
+	strcat(sudoInstr, "\n");
+	strcat(sudoInstr, second_half);
+	return sudoInstr;
+}
+
+const char* BLE_FUNC(Multi_Store* store, const char** args, size_t size){
+	const char* rs = args[1];
+	const char* rt = args[2];
+	const char* offset = args[3];
+	char* sudoInstr = (char*) New_Array(sizeof(char), 66);
+	const char** subArgs[4] = {
+		NULL,
+		"$at",
+		rs,
+		rt
+	};
+	const char* first_half = SUB_FUNC(store, subArgs, size);
+	const char** bltzArgs[3] = {
+		NULL,
+		"$at",
+		offset
+	};
+	const char* second_half = BLEZ_FUNC(store, bltzArgs, size);
+	strcat(sudoInstr, first_half);
+	strcat(sudoInstr, "\n");
+	strcat(sudoInstr, second_half);
+	return sudoInstr;
 }
 
 const char* LUI_FUNC(Multi_Store* store, const char** args, size_t size){
@@ -361,19 +386,78 @@ const char* SW_FUNC(Multi_Store* store, const char** args, size_t size){
 }
 
 const char* LA_FUNC(Multi_Store* store, const char** args, size_t size){
-	//not right...return the two pseudo instructions i a 64 bit string with a '\n in the middle'
-	I_Type* instr = (I_Type*) 
-		New_I_Type(LA_OPCODE, args[1], args[2], args[3]);
-	// return instr->toString(instr);
-	return "LA instruction";
+	char* rd = args[1];
+	char* label = args[2];
+	int address = store->get_immediate(store, label);
+	if(address == -1){
+		return "label is not indexed and thus could not be resolved...";
+	}
+	if(address < 0xFFFF){
+		const char** addiArgs[4] = {
+			NULL, 
+			rd, 
+			"$zero",
+			label
+		};
+		return ADDI_FUNC(store, addiArgs, size);
+	}
+	else{
+		char* sudoInstr = (char*) New_Array(sizeof(char), 66);
+		char topBits[17];
+		sprintf(topBits, "%d", (address >> 16));
+		const char** luiArgs[3] = {
+			NULL,
+			rd,
+			topBits
+		};
+		const char** oriArgs[4] = {
+			NULL,
+			rd,
+			rd,
+			label
+		};
+		strcat(sudoInstr, LUI_FUNC(store, luiArgs, size));
+		strcat(sudoInstr, "\n");
+		strcat(sudoInstr, ORI_FUNC(store, oriArgs, size));
+		return sudoInstr;
+	}
 }
 
 const char* LI_FUNC(Multi_Store* store, const char** args, size_t size){
-	//not right...return the two pseudo instructions i a 64 bit string with a '\n in the middle'
-	I_Type* instr = (I_Type*) 
-		New_I_Type(LI_OPCODE, args[1], args[2], args[3]);
-	// return instr->toString(instr);
-	return "LI instruction";
+	char* rd = args[1];
+	char* imm = args[2];
+	int immediate = atoi(imm);
+	char btmBits[17];
+	sprintf(btmBits, "%d", immediate);
+	if(immediate < 0xFFFF){
+		const char** addiArgs[4] = {
+			NULL, 
+			rd, 
+			"$zero",
+			btmBits
+		};
+		return ADDIU_FUNC(store, addiArgs, size);
+	}
+	else{
+		char* sudoInstr = (char*) New_Array(sizeof(char), 66);
+		char topBits[17];
+		sprintf(topBits, "%d", (immediate >> 16));
+		const char** luiArgs[3] = {
+			NULL,
+			rd,
+			topBits
+		};
+		const char** oriArgs[4] = {
+			NULL,
+			rd,
+			rd,
+			btmBits
+		};
+		strcat(sudoInstr, LUI_FUNC(store, luiArgs, size));
+		strcat(sudoInstr, "\n");
+		strcat(sudoInstr, ORI_FUNC(store, oriArgs, size));
+		return sudoInstr;
+	}
 }
 
 //J_Types----------------------------------------------------------------------

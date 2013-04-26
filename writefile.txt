@@ -1,18 +1,18 @@
- la $a0, array # load address of array 
- la $a1, array_size # load address of array_size 
- lw $a1, 0($a1) # load value of array_size variable 
- sll $t1, $t0, 2 # t1 = (i * 4) 
- add $t2, $a0, $t1 # t2 contains address of array[i] 
- sw $t0, 0($t2) # array[i] = i 
- addi $t0, $t0, 1 # i = i+1 
- add $t4, $t4, $t0 # sum($t4) = ($t4 + array[i]) 
- slt $t3, $t0, $a1 # $t3 = ( i < array_size) 
- bne $t3, $zero, loop # if ( i < array_size ) then loop 
- li $v0, 4 # system call to print string 
- la $a0, message # load address of message into arg register 
- syscall # make call 
- li $v0, 0 # system call to print an integer 
- or $a0, $t4, $zero # load value to print into arg register 
- syscall # make call 
- li $v0, 10 # system call to terminate program 
- syscall # make call 
+00100000000001000010000000000000
+00100000000001010010000000000000
+10001100101001010000000000000000
+00000000000010000100100010000000
+00000000100111110101000000100000
+10101101010010000000000000000000
+00100001000010000000000000000001
+00000001100111110110000000100000
+00000001000111110101100000101010
+00100001011000000000101100101000
+00100100000000100000000000000100
+00100000000001000010001101100000
+00000000000000000000000000001100
+00100100000000100000000000000000
+00000001100111110010000000100101
+00000000000000000000000000001100
+00100100000000100000000000001010
+00000000000000000000000000001100
