@@ -327,7 +327,7 @@ const char* BLTZ_FUNC(Multi_Store* store, const char** args, size_t size){
 	);
 	return instr->toString(instr);
 }
-//this should only take two captures TODO
+
 const char* LUI_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
 		LUI_OPCODE, 
@@ -391,11 +391,11 @@ const char* J_FUNC(Multi_Store* store, const char** args, size_t size){
 
 //Special Types----------------------------------------------------------------
 const char* NOP_FUNC(Multi_Store* store, const char** args, size_t size){
-	return "NOOP";
+	return "00000000000000000000000000000000";
 }
 
 const char* SYSCALL_FUNC(Multi_Store* store, const char** args, size_t size){
-	return "SYSCALL";
+	return "00000000000000000000000000001100";
 }
 
 /**
