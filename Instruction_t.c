@@ -24,8 +24,8 @@ char* R_Type_To_String(R_Type* self){
 char* I_Type_To_String(I_Type* self){
 	char* instruction = (char*) New_Array(sizeof(char), 33);
 	strcat(instruction, self->opcode);
-	strcat(instruction, self->rs);
-	strcat(instruction, self->rt);
+	strcat(instruction, self->rs ? self->rs : "00000");
+	strcat(instruction, self->rt ? self->rt : "00000");
 	strcat(instruction, self->imm_16);
 	return instruction;
 }
@@ -71,7 +71,7 @@ R_Type* New_R_Type(const char* op, const char* rs, const char* rt, const char* r
  * @param imm_16 the String representation of the 16 bit immediate
  * @return I_Type* the I_Type created
  */
-I_Type* New_I_Type(const char* op, const char* rs, const char* rt, const char* imm_16){
+I_Type* New_I_Type(const char* op, const char* rt, const char* rs, const char* imm_16){
 	I_Type* i = (I_Type*) malloc(sizeof(I_Type));
 	i->opcode = op;
 	i->rs = rs;

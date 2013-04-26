@@ -32,7 +32,7 @@
 #define BLEZ_REGEX "blez[[:space:]](.*),[[:space:]]([[:digit:]]+)" //rt defaults to 00000
 #define BLTZ_REGEX "bltz[[:space:]](.*),[[:space:]]([[:digit:]]+)" //rt defaults to 00000
 #define LUI_REGEX "lui[[:space:]](.*),[[:space:]]([[:digit:]]+)" //rd defaults to 00000
-#define LW_REGEX "lw[[:space:]](.*),[[:space:]]([[:digit:]]+\\(.*\\))"
+#define LW_REGEX "lw[[:space:]](.*),[[:space:]]([[:digit:]]+)\\((.*)\\)"
 #define SW_REGEX "sw[[:space:]](.*),[[:space:]]([[:digit:]]+)\\((.*)\\)"
 #define LA_REGEX "la[[:space:]](.*),[[:space:]](.*)"
 	//look up address of label and if it is <= 16 bits => addi rd, 00000, label 

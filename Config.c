@@ -269,8 +269,8 @@ const char* SLTI_FUNC(Multi_Store* store, const char** args, size_t size){
 const char* BEQ_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
 		BEQ_OPCODE, 
-		RESOLVE_EXP(store, args[1], 5), 
 		RESOLVE_EXP(store, args[2], 5), 
+		RESOLVE_EXP(store, args[1], 5), 
 		RESOLVE_EXP(store, args[3], 16)
 	);
 	return instr->toString(instr);
@@ -279,13 +279,14 @@ const char* BEQ_FUNC(Multi_Store* store, const char** args, size_t size){
 const char* BNE_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
 		ADDI_OPCODE, 
-		RESOLVE_EXP(store, args[1], 5), 
 		RESOLVE_EXP(store, args[2], 5), 
+		RESOLVE_EXP(store, args[1], 5), 
 		RESOLVE_EXP(store, args[3], 16)
 	);
 	return instr->toString(instr);
 }
 
+//sudo TODO
 const char* BLT_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
 		BLT_OPCODE, 
@@ -296,6 +297,7 @@ const char* BLT_FUNC(Multi_Store* store, const char** args, size_t size){
 	return instr->toString(instr);
 }
 
+//sudo TODO
 const char* BLE_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
 		BLE_OPCODE, 
@@ -305,23 +307,23 @@ const char* BLE_FUNC(Multi_Store* store, const char** args, size_t size){
 	);
 	return instr->toString(instr);
 }
-
+//Hardcoded to only take immediate...could be dangerous
 const char* BLEZ_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
-		BLEZ_OPCODE, 
+		BLEZ_OPCODE,
+		NULL, 
 		RESOLVE_EXP(store, args[1], 5), 
-		"00000",
-		RESOLVE_EXP(store, args[3], 16)
+		RESOLVE_EXP(store, args[2], 16)
 	);
 	return instr->toString(instr);
 }
-//this should only take two captures TODO
+
 const char* BLTZ_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
 		BLTZ_OPCODE, 
+		NULL,
 		RESOLVE_EXP(store, args[1], 5), 
-		"00000",
-		RESOLVE_EXP(store, args[3], 16)
+		RESOLVE_EXP(store, args[2], 16)
 	);
 	return instr->toString(instr);
 }
@@ -329,33 +331,29 @@ const char* BLTZ_FUNC(Multi_Store* store, const char** args, size_t size){
 const char* LUI_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
 		LUI_OPCODE, 
-		RESOLVE_EXP(store, args[1], 5), 
-		RESOLVE_EXP(store, args[2], 5),
-		"0000000000000000"
+		RESOLVE_EXP(store, args[1], 5),
+		NULL, 
+		RESOLVE_EXP(store, args[2], 16)
 	);
 	return instr->toString(instr);
 }
 
-//TODO
-//this should only take two captures ...only takes reg with offset
 const char* LW_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
 		LW_OPCODE, 
 		RESOLVE_EXP(store, args[1], 5), 
-		RESOLVE_EXP(store, args[2], 5), 
-		// RESOLVE_EXP(store, args[3], 16)
-		""
+		RESOLVE_EXP(store, args[3], 5), 
+		RESOLVE_EXP(store, args[2], 16)
 	);
 	return instr->toString(instr);
 }
 
-//this should only take two captures TODO...only takes reg with offset
 const char* SW_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
 		SW_OPCODE, 
 		RESOLVE_EXP(store, args[1], 5), 
-		RESOLVE_EXP(store, args[2], 5), 
-		RESOLVE_EXP(store, args[3], 16)
+		RESOLVE_EXP(store, args[3], 5), 
+		RESOLVE_EXP(store, args[2], 16)
 	);
 	return instr->toString(instr);
 }
