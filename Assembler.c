@@ -33,6 +33,8 @@ int main(int argc, char* argv[]){
 	IO* io = New_IO("readfile.txt", "r", "writefile.txt", "w");
 	Multi_Store* store = New_Multi_Store();
 	Sifter** sifters = Config_Text_Sifters(store);
+	store_registers(store);
+	init_exp_sifters(store);
 	Store_Data_Section(io, store);
 
 	display_symbol_table(store);

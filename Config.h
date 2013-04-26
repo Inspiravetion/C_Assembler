@@ -14,6 +14,8 @@
 Sifter** Config_Text_Sifters(Multi_Store* store);
 Sifter** Config_Data_Sifters();
 const char* DUMMY(Multi_Store* store, const char** args, size_t size);
+void store_registers(Multi_Store* store);
+void init_exp_sifters(Multi_Store* store);
 
 #define DATA_SECTION_SIFTER New_Sifter(NULL, DATA_SECTION_REGEX, &DUMMY)
 

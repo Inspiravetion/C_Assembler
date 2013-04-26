@@ -12,6 +12,29 @@ const char* DUMMY(Multi_Store* store, const char** args, size_t size){
 
 ///////////////////////////////////////////////////////////////////////////////
 //                                                                           //
+//  Register Setup                                                           //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
+
+#define REGISTER_COUNT 32
+
+static char* registers[REGISTER_COUNT] = {"$zero", "$at", "$v0", "$v1", "$a0", 
+	"$a1", "$a2", "$a3", "$t0", "$t1", "$t2", "$t3", "$t4", "$t5", "$t6", "$t7",
+	"$s0", "$s1", "$s2", "$s3", "$s4", "$s5", "$s6", "$s7", "$t8", "$t9", "$k0",
+	"$k1", "$gp", "$sp", "$s8", "$ra"
+};
+
+void store_registers(Multi_Store* store){
+	int i = 0;
+	while(i < REGISTER_COUNT){
+		store->add_immediate(store, registers[i], i);
+		i++;
+	}
+};
+
+
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
 //  Binary Conversion Sifters and Helpers                                    //
 //                                                                           //
 ///////////////////////////////////////////////////////////////////////////////
@@ -20,9 +43,26 @@ const char* IS_REG(Multi_Store* store, const char** args, size_t size);
 const char* IS_REG_WITH_OFFSET(Multi_Store* store, const char** args, size_t size);
 const char* IS_IMM(Multi_Store* store, const char** args, size_t size);
 
-#define REG_SIFTER New_Sifter(NULL, IS_REG_REGEX, &IS_REG)
+Sifter** EXP_SIFTERS = NULL;
+
+void init_exp_sifters(Multi_Store* store){
+	Sifter** sifters = (Sifter**) New_Array(sizeof(Sifter*), 3);
+	int i = 0;
+
+	sifters[i] = New_Sifter(store, IS_REG_WITH_OFFSET_REGEX, &IS_REG_WITH_OFFSET);
+	i++;
+
+	sifters[i] = New_Sifter(store, IS_REG_REGEX, &IS_REG);
+	i++;
+
+	sifters[i] = New_Sifter(store, IS_IMM_REGEX, &IS_IMM);
+
+	EXP_SIFTERS = sifters;
+}
+
+/*#define REG_SIFTER New_Sifter(NULL, IS_REG_REGEX, &IS_REG)
 #define REG_WITH_OFFSET_SIFTER New_Sifter(NULL, IS_REG_WITH_OFFSET_REGEX, &IS_REG_WITH_OFFSET)
-#define IMM_SIFTER New_Sifter(NULL, IS_IMM_REGEX, &IS_IMM)
+#define IMM_SIFTER New_Sifter(NULL, IS_IMM_REGEX, &IS_IMM)*/
 
 const char* intToBinaryString(int num, int strLen) {
     char* string = (char*) New_Array(sizeof(char), (strLen + 1));
@@ -36,12 +76,15 @@ const char* intToBinaryString(int num, int strLen) {
 }
 
 const char* IS_REG(Multi_Store* store, const char** args, size_t size){
-	//convert args[1] to its proper binary register
-	return "why yes it is...";
+	printf("%s\n", args[1]);
+	// printf("%s\n", args[2]);
+	return args[1];
 }
 
 const char* IS_REG_WITH_OFFSET(Multi_Store* store, const char** args, size_t size){
 	//convert args[2] to its proper binary register plus its immediate args[1]
+	printf("%s\n", args[1]);
+	printf("%s\n", args[2]);
 	return "why yes it is...";
 }
 
@@ -52,18 +95,17 @@ const char* IS_IMM(Multi_Store* store, const char** args, size_t size){
 
 const char* RESOLVE_EXP(Multi_Store* store, const char* exp, int maxLen){
 	const char* result;
-	//GOING TO NEED TO CHECK IF THIS EXPRESSION IS IN THE STORE ALREADY
-	if(result = REG_WITH_OFFSET_SIFTER->Sift(REG_WITH_OFFSET_SIFTER, exp)){
+	if(result = EXP_SIFTERS[0]->Sift(EXP_SIFTERS[0], exp)){
 		//find out if this should return the binary representation of the
 		//register number plus the immediate or something else
 		printf("%s\n", "is ofset with register");
 		return result;
 	}
-	else if(result = REG_SIFTER->Sift(REG_SIFTER, exp)){
-		printf("%s\n", "is register");
-		return result;
+	else if(result = EXP_SIFTERS[1]->Sift(EXP_SIFTERS[1], exp)){
+		int address = store->get_immediate(store, result);
+		return intToBinaryString(address, maxLen);
 	}
-	else if(result = IMM_SIFTER->Sift(IMM_SIFTER, exp)){
+	else if(result = EXP_SIFTERS[2]->Sift(EXP_SIFTERS[2], exp)){
 		char* trimmedString = (char*) New_Array(sizeof(char), maxLen + 1);
 		strncat(trimmedString, (result + INT_LENGTH - maxLen), maxLen);
 		return trimmedString;
@@ -296,12 +338,14 @@ const char* LUI_FUNC(Multi_Store* store, const char** args, size_t size){
 	return instr->toString(instr);
 }
 
+//TODO
 const char* LW_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
 		LW_OPCODE, 
 		RESOLVE_EXP(store, args[1], 5), 
 		RESOLVE_EXP(store, args[2], 5), 
-		RESOLVE_EXP(store, args[3], 16)
+		// RESOLVE_EXP(store, args[3], 16)
+		""
 	);
 	return instr->toString(instr);
 }
