@@ -8,7 +8,7 @@
 char* R_Type_To_String(R_Type* self){
 	char* instruction = (char*) New_Array(sizeof(char), 33);
 	strcat(instruction, "000000");
-	strcat(instruction, self->rs);
+	strcat(instruction, self->rs ? self->rs : "00000");
 	strcat(instruction, self->rt);
 	strcat(instruction, self->rd);
 	strcat(instruction, self->sa ? self->sa : "00000");
@@ -57,7 +57,7 @@ R_Type* New_R_Type(const char* op, const char* rs, const char* rt, const char* r
 	r->rs = rs;
 	r->rt = rt;
 	r->rd = rd;
-	r->sa = sa ? sa : NULL;
+	r->sa = sa;
 	r->toString = &R_Type_To_String;
 	Register_Disposable(r);
 	return r;

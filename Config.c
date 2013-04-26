@@ -130,9 +130,9 @@ const char* RESOLVE_EXP(Multi_Store* store, const char* exp, int maxLen){
 const char* ADD_FUNC(Multi_Store* store, const char** args, size_t size){
 	R_Type* instr = (R_Type*) New_R_Type(
 		ADD_OPCODE, 
-		RESOLVE_EXP(store, args[1], 5), 
 		RESOLVE_EXP(store, args[2], 5), 
 		RESOLVE_EXP(store, args[3], 5), 
+		RESOLVE_EXP(store, args[1], 5), 
 		NULL
 	);
 	return instr->toString(instr);
@@ -141,9 +141,9 @@ const char* ADD_FUNC(Multi_Store* store, const char** args, size_t size){
 const char* SUB_FUNC(Multi_Store* store, const char** args, size_t size){
 	R_Type* instr = (R_Type*) New_R_Type(
 		SUB_OPCODE, 
-		RESOLVE_EXP(store, args[1], 5), 
 		RESOLVE_EXP(store, args[2], 5), 
-		RESOLVE_EXP(store, args[3], 5),
+		RESOLVE_EXP(store, args[3], 5), 
+		RESOLVE_EXP(store, args[1], 5),
 		NULL
 	);
 	return instr->toString(instr);
@@ -152,9 +152,9 @@ const char* SUB_FUNC(Multi_Store* store, const char** args, size_t size){
 const char* OR_FUNC(Multi_Store* store, const char** args, size_t size){
 	R_Type* instr = (R_Type*) New_R_Type(
 		OR_OPCODE, 
-		RESOLVE_EXP(store, args[1], 5), 
 		RESOLVE_EXP(store, args[2], 5), 
-		RESOLVE_EXP(store, args[3], 5),
+		RESOLVE_EXP(store, args[3], 5), 
+		RESOLVE_EXP(store, args[1], 5),
 		NULL
 	);
 	return instr->toString(instr);
@@ -163,9 +163,9 @@ const char* OR_FUNC(Multi_Store* store, const char** args, size_t size){
 const char* AND_FUNC(Multi_Store* store, const char** args, size_t size){
 	R_Type* instr = (R_Type*) New_R_Type(
 		AND_OPCODE, 
-		RESOLVE_EXP(store, args[1], 5), 
 		RESOLVE_EXP(store, args[2], 5), 
-		RESOLVE_EXP(store, args[3], 5),
+		RESOLVE_EXP(store, args[3], 5), 
+		RESOLVE_EXP(store, args[1], 5),
 		NULL
 	);
 	return instr->toString(instr);
@@ -174,34 +174,32 @@ const char* AND_FUNC(Multi_Store* store, const char** args, size_t size){
 const char* SLT_FUNC(Multi_Store* store, const char** args, size_t size){
 	R_Type* instr = (R_Type*) New_R_Type(
 		SLT_OPCODE, 
-		RESOLVE_EXP(store, args[1], 5), 
 		RESOLVE_EXP(store, args[2], 5), 
-		RESOLVE_EXP(store, args[3], 5),
+		RESOLVE_EXP(store, args[3], 5), 
+		RESOLVE_EXP(store, args[1], 5),
 		NULL
 	);
 	return instr->toString(instr);
 }
 
 const char* SLL_FUNC(Multi_Store* store, const char** args, size_t size){
-	//sa may not be Null for this
 	R_Type* instr = (R_Type*) New_R_Type(
 		SLL_OPCODE, 
-		RESOLVE_EXP(store, args[1], 5), 
+		NULL,
 		RESOLVE_EXP(store, args[2], 5), 
-		RESOLVE_EXP(store, args[3], 5),
-		NULL
+		RESOLVE_EXP(store, args[1], 5), 
+		RESOLVE_EXP(store, args[3], 5)
 	);
 	return instr->toString(instr);
 }
 
 const char* SRL_FUNC(Multi_Store* store, const char** args, size_t size){
-	//sa may not be Null for this
 	R_Type* instr = (R_Type*) New_R_Type(
 		SRL_OPCODE, 
-		RESOLVE_EXP(store, args[1], 5), 
+		NULL,
 		RESOLVE_EXP(store, args[2], 5), 
-		RESOLVE_EXP(store, args[3], 5),
-		NULL
+		RESOLVE_EXP(store, args[1], 5), 
+		RESOLVE_EXP(store, args[3], 5)
 	);
 	return instr->toString(instr);
 }
@@ -317,7 +315,7 @@ const char* BLEZ_FUNC(Multi_Store* store, const char** args, size_t size){
 	);
 	return instr->toString(instr);
 }
-
+//this should only take two captures TODO
 const char* BLTZ_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
 		BLTZ_OPCODE, 
@@ -327,7 +325,7 @@ const char* BLTZ_FUNC(Multi_Store* store, const char** args, size_t size){
 	);
 	return instr->toString(instr);
 }
-
+//this should only take two captures TODO
 const char* LUI_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
 		LUI_OPCODE, 
@@ -339,6 +337,7 @@ const char* LUI_FUNC(Multi_Store* store, const char** args, size_t size){
 }
 
 //TODO
+//this should only take two captures ...only takes reg with offset
 const char* LW_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
 		LW_OPCODE, 
@@ -350,6 +349,7 @@ const char* LW_FUNC(Multi_Store* store, const char** args, size_t size){
 	return instr->toString(instr);
 }
 
+//this should only take two captures TODO...only takes reg with offset
 const char* SW_FUNC(Multi_Store* store, const char** args, size_t size){
 	I_Type* instr = (I_Type*) New_I_Type(
 		SW_OPCODE, 
