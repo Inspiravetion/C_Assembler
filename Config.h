@@ -14,6 +14,7 @@
 
 Sifter** Config_Text_Sifters(Multi_Store* store);
 Sifter** Config_Data_Sifters();
+const char* RETURN_KEY(Multi_Store* store, const char** args, size_t size);
 const char* DUMMY(Multi_Store* store, const char** args, size_t size);
 void store_registers(Multi_Store* store);
 void init_exp_sifters(Multi_Store* store);

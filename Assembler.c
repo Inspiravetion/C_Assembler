@@ -10,12 +10,15 @@
 
 
 void Store_Symbols(IO* io, Multi_Store* store){
-	io->in_rewind(io);
+	io->seek_pattern(io, New_Sifter(store, BEG_OF_FILE, &RETURN_KEY));
 	Sifter** sifters = Config_Data_Sifters(store);
+	Sifter* trimmer = New_Sifter(store, HASH_COMMENT_TRIMMER_REGEX, &RETURN_KEY);
 	char* result;
 	int begOfLine = io->get_curr_offset(io);
 	int base = TEXT_SECTION_BASE_ADDRESS;
-	while(result = io->readline(io)){
+	while(result = io->readline(io, trimmer)){
+		//need to figure out if line is an instruction and if so
+		//add the necessary amount to the offset
 		if(DATA_SECTION_SIFTER->Sift(DATA_SECTION_SIFTER, result)){
 			io->reset_in_offset(io);
 			base = DATA_SECTION_BASE_ADDRESS;
@@ -51,7 +54,7 @@ int main(int argc, char* argv[]){
 
 	char* instr;
 	char* binInstr;
-	while(instr = io->readline(io)){
+	while(instr = io->readline(io, NULL)){
 		int i = 0;
 		while(i < INSTRUCTION_COUNT){
 			if(binInstr = (char*)(sifters[i])->Sift(sifters[i], instr)){

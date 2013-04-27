@@ -14,10 +14,11 @@ struct _IO{
 	FILE* in;
 	FILE* out;
 	int in_offset;
-    char* (*readline)(IO* io);
+    char* (*readline)(IO* io, Sifter* trimmer);
     void (*print)(IO* io, char* data);
 	bool (*in_rewind)(IO* io);
 	int (*get_curr_offset)(IO* io);
+	bool (*seek_pattern)(IO* io, Sifter* s);
 	void (*reset_in_offset)(IO* io);
 };
 

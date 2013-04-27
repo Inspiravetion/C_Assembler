@@ -1,15 +1,19 @@
 #include "IO.h"
 
-char* readline(IO* io){
+char* readline(IO* io, Sifter* trimmer){
+	//increasing the offset should not be in here
 	if(io->in){
 		char* container = (char*) New_Array(sizeof(char), LINE_MAX);
 		if(fgets(container, LINE_MAX, io->in)){
+			if(trimmer){
+				container = trimmer->Sift(trimmer, container);	
+				printf("%s\n", container);			
+			}
 			int end = strlen(container) - 1;
 			if(container[end] = '\n'){
 				container[end] = '\0';			
 			}
-			int step = (((end + 1) * sizeof(char) /*bytes*/) * 8) /*bits*/;
-			io->in_offset += step;
+			io->in_offset += 4;
 			return container;
 		}
 		else{
@@ -19,6 +23,18 @@ char* readline(IO* io){
 	printf("in FILE* does not exist...\n");
 	return NULL;
 }
+
+bool seek_pattern(IO* io, Sifter* s){
+  io->in_rewind(io);
+  char* result;
+  while((result = io->readline(io, NULL))){
+    if(s->Sift(s, result)){
+    	io->reset_in_offset(io);
+      return true;
+    }
+  }
+  return false;
+};
 
 void reset_in_offset(IO* io){
 	io->in_offset = 0;
@@ -58,6 +74,7 @@ IO* New_IO(char* fileIn, char* inFlags, char* fileOut, char* outFlags){
 	io->in_rewind = &in_rewind;
 	io->get_curr_offset = &get_curr_offset;
 	io->reset_in_offset = &reset_in_offset;
+	io->seek_pattern = &seek_pattern;
 	io->in_offset = 0;
 	Register_Disposable(io);
 	return io;
