@@ -12,32 +12,31 @@ void Store_Symbols(IO* io, Multi_Store* store){
 	Sifter** sifters = Config_Data_Sifters(store);
 	Sifter* trimmer = New_Sifter(store, HASH_COMMENT_TRIMMER_REGEX, &RETURN_KEY);
 	char* result;
-	int begOfLine = io->get_curr_offset(io);
-	int base = TEXT_SECTION_BASE_ADDRESS;
+	bool isInstr;
+	bool inTextSection = true;
 	while(result = io->readline(io, trimmer)){
-		//need to figure out if line is an instruction and if so
-		//add the necessary amount to the offset
-		//Middleware might be a good idea here
 		if(DATA_SECTION_SIFTER->Sift(DATA_SECTION_SIFTER, result)){
-			io->reset_in_offset(io);
-			base = DATA_SECTION_BASE_ADDRESS;
+			store->reset_offset(store);
+			inTextSection = false;
 		}
+		isInstr = true;
 		int i = 0;
-		char* key;
 		while(i < DATA_TYPE_COUNT){
-			if(key = sifters[i]->Sift(sifters[i], result)){
-				store->add_immediate(store, key, base + begOfLine);
+			if(sifters[i]->Sift(sifters[i], result)){
+				isInstr = false;
 				break;
 			}
 			i++;
 		}
-		begOfLine = io->get_curr_offset(io);
+		if(inTextSection && isInstr){
+			store->increment_offset(store, 4);
+		}
 	}
 	io->in_rewind(io);
 };
 
 void display_symbol_table(Multi_Store* store){
-	store->display_immediate_table(store);
+	store->display_label_table(store);
 };
 
 

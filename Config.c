@@ -111,7 +111,7 @@ const char* RESOLVE_EXP(Multi_Store* store, const char* exp, int maxLen){
 		return trimmedString;
 	}
 	else{
-		int address = store->get_immediate(store, exp);
+		int address = store->get_label(store, exp);
 		if(address != -1){
 			printf("%08X\n", address);
 			return intToBinaryString(address, maxLen);
@@ -388,7 +388,7 @@ const char* SW_FUNC(Multi_Store* store, const char** args, size_t size){
 const char* LA_FUNC(Multi_Store* store, const char** args, size_t size){
 	char* rd = args[1];
 	char* label = args[2];
-	int address = store->get_immediate(store, label);
+	int address = store->get_label(store, label);
 	if(address == -1){
 		return "label is not indexed and thus could not be resolved...";
 	}
@@ -598,25 +598,25 @@ void STORE_ARRAY_MIDDLEWARE(Multi_Store* store, const char** strArr){
 		i++;
 	}
 	store->add_array(store, key, value, size);
-	//calculate and increment offset
-	//store array in label_store and array store
+	store->add_label(store, key, (DATA_SECTION_BASE_ADDRESS + store->offset));
+	store->increment_offset(store, (4 * size));
 }
 
 void STORE_STRING_MIDDLEWARE(Multi_Store* store, const char** strArr){
 	store->add_string(store, strArr[1], strArr[2]);
-	//calculate and increment offset
-	//store String in label_store and String store
+	store->add_label(store, strArr[1], (DATA_SECTION_BASE_ADDRESS + store->offset));
+	store->increment_offset(store, strlen(strArr[2]));
 }
 
 void STORE_IMMEDIATE_MIDDLEWARE(Multi_Store* store, const char** strArr){
-	printf("Immediate Data\n");
-	//calculate and increment offset
-	//store immediate in label_store and immediate store
+	store->add_immediate(store, strArr[1], atoi(strArr[2]));
+	store->add_label(store, strArr[1], (DATA_SECTION_BASE_ADDRESS + store->offset));
+	store->increment_offset(store, 4);
 }
 
 void STORE_LABEL_MIDDLEWARE(Multi_Store* store, const char** strArr){
-	printf("Immediate Data\n");
-	//store current offset in label store with the label
+	printf("label: %s offset: %08X\n", strArr[1], store->offset);
+	store->add_label(store, strArr[1], (TEXT_SECTION_BASE_ADDRESS + store->offset));
 }
 
 const char* RETURN_KEY(Multi_Store* store, const char** args, size_t size){

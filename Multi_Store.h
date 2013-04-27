@@ -23,7 +23,7 @@ struct _Multi_Store{
 	Store* register_store;
 	Store* label_store;
     void (*add_array)(Multi_Store* self, const char* key, int* val, int length);
-    void (*add_label)(Multi_Store* self, const char* key, int* val);
+    void (*add_label)(Multi_Store* self, const char* key, int val);
     void (*add_string)(Multi_Store* self, const char* key, const char* val);
     void (*add_immediate)(Multi_Store* self, const char* key, int val);
     void (*add_register)(Multi_Store* self, const char* key, int val);
@@ -34,7 +34,7 @@ struct _Multi_Store{
 	int (*get_label)(Multi_Store* self, const char* key);
 	void (*reset_offset)(Multi_Store* self);
 	void (*increment_offset)(Multi_Store* self, int increment);
-	void (*display_immediate_table)(Multi_Store* self);
+	void (*display_label_table)(Multi_Store* self);
 };
 
 Multi_Store* New_Multi_Store();

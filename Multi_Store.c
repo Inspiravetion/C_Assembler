@@ -75,8 +75,8 @@ int get_label(Multi_Store* self, const char* key){
 	return intptr ? intptr[0] : -1;
 };
 
-void display_immediate_table(Multi_Store* self){
-	self->immediate_store->display(self->immediate_store);
+void display_label_table(Multi_Store* self){
+	self->label_store->display(self->label_store);
 };
 
 void reset_offset(Multi_Store* self){
@@ -106,7 +106,7 @@ Multi_Store* New_Multi_Store(){
 	store->get_label        = &get_label;
 	store->reset_offset     = &reset_offset;
 	store->increment_offset = &increment_offset;
-	store->display_immediate_table = &display_immediate_table;
+	store->display_label_table = &display_label_table;
 	Register_Disposable(store);
 	return store;
 };
