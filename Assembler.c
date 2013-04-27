@@ -1,12 +1,10 @@
 #include "Assembler.h"
 
-//Still gotta fix the sudo instructions and ones with shifts
-//index labels in text portion
 //figure out of the IS_REG_WITH_OFFSET should be removed
 //from RESOLVE_EXP()
 //handle command line...test
 //be able to dump the .data section...be glad you didn't delete all that other code
-
+//fix offset calculation...middleware more than likely
 
 
 void Store_Symbols(IO* io, Multi_Store* store){
@@ -19,6 +17,7 @@ void Store_Symbols(IO* io, Multi_Store* store){
 	while(result = io->readline(io, trimmer)){
 		//need to figure out if line is an instruction and if so
 		//add the necessary amount to the offset
+		//Middleware might be a good idea here
 		if(DATA_SECTION_SIFTER->Sift(DATA_SECTION_SIFTER, result)){
 			io->reset_in_offset(io);
 			base = DATA_SECTION_BASE_ADDRESS;

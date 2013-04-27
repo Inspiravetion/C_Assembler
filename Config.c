@@ -598,34 +598,49 @@ void STORE_ARRAY_MIDDLEWARE(Multi_Store* store, const char** strArr){
 		i++;
 	}
 	store->add_array(store, key, value, size);
+	//calculate and increment offset
+	//store array in label_store and array store
 }
 
 void STORE_STRING_MIDDLEWARE(Multi_Store* store, const char** strArr){
 	store->add_string(store, strArr[1], strArr[2]);
+	//calculate and increment offset
+	//store String in label_store and String store
 }
 
 void STORE_IMMEDIATE_MIDDLEWARE(Multi_Store* store, const char** strArr){
 	printf("Immediate Data\n");
+	//calculate and increment offset
+	//store immediate in label_store and immediate store
+}
+
+void STORE_LABEL_MIDDLEWARE(Multi_Store* store, const char** strArr){
+	printf("Immediate Data\n");
+	//store current offset in label store with the label
 }
 
 const char* RETURN_KEY(Multi_Store* store, const char** args, size_t size){
 	return args[1];
 }
 
-Sifter** Config_Data_Sifters(){
+Sifter** Config_Data_Sifters(Multi_Store* store){
 	Sifter** sifters = (Sifter**) New_Array(sizeof(Sifter*), DATA_TYPE_COUNT);
 	int i = 0;
 
-	sifters[i] = New_Sifter(NULL, ARRAY_DATA_REGEX, &RETURN_KEY);
+	sifters[i] = New_Sifter(store, ARRAY_DATA_REGEX, &RETURN_KEY);
+	sifters[i]->Store_Middleware = &STORE_ARRAY_MIDDLEWARE;
 	i++;
 
-	sifters[i] = New_Sifter(NULL, STRING_DATA_REGEX, &RETURN_KEY);
+	sifters[i] = New_Sifter(store, STRING_DATA_REGEX, &RETURN_KEY);
+	sifters[i]->Store_Middleware = &STORE_STRING_MIDDLEWARE;
 	i++;
 
-	sifters[i] = New_Sifter(NULL, IMMEDIATE_DATA_REGEX, &RETURN_KEY);
+	sifters[i] = New_Sifter(store, IMMEDIATE_DATA_REGEX, &RETURN_KEY);
+	sifters[i]->Store_Middleware = &STORE_IMMEDIATE_MIDDLEWARE;
 	i++;
 
-	sifters[i] = New_Sifter(NULL, LABEL_REGEX, &RETURN_KEY);	
+	sifters[i] = New_Sifter(store, LABEL_REGEX, &RETURN_KEY);
+	sifters[i]->Store_Middleware = &STORE_LABEL_MIDDLEWARE;
 
 	return sifters;
 }

@@ -26,6 +26,7 @@ struct _Sifter{
     Multi_Store* store;
    	const char* (*Custom)(Multi_Store* store, const char** strArr, size_t numGroups);
     const char* (*Sift)(Sifter* self, const char* compStr);
+	void (*Store_Middleware)(Multi_Store* store, const char** strArr);
 };
 
 /**
