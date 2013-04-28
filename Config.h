@@ -18,6 +18,8 @@ const char* RETURN_KEY(Multi_Store* store, const char** args, size_t size);
 const char* DUMMY(Multi_Store* store, const char** args, size_t size);
 void store_registers(Multi_Store* store);
 void init_exp_sifters(Multi_Store* store);
+const char* intToBinaryString(int num, int strLen);
+
 
 #define DATA_SECTION_SIFTER New_Sifter(NULL, DATA_SECTION_REGEX, &DUMMY)
 

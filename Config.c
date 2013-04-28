@@ -599,23 +599,27 @@ void STORE_ARRAY_MIDDLEWARE(Multi_Store* store, const char** strArr){
 	}
 	store->add_array(store, key, value, size);
 	store->add_label(store, key, (DATA_SECTION_BASE_ADDRESS + store->offset));
+	store->add_label_key(store, key);
 	store->increment_offset(store, (4 * size));
 }
 
 void STORE_STRING_MIDDLEWARE(Multi_Store* store, const char** strArr){
 	store->add_string(store, strArr[1], strArr[2]);
 	store->add_label(store, strArr[1], (DATA_SECTION_BASE_ADDRESS + store->offset));
+	store->add_label_key(store, strArr[1]);
 	store->increment_offset(store, strlen(strArr[2]));
 }
 
 void STORE_IMMEDIATE_MIDDLEWARE(Multi_Store* store, const char** strArr){
 	store->add_immediate(store, strArr[1], atoi(strArr[2]));
 	store->add_label(store, strArr[1], (DATA_SECTION_BASE_ADDRESS + store->offset));
+	store->add_label_key(store, strArr[1]);
 	store->increment_offset(store, 4);
 }
 
 void STORE_LABEL_MIDDLEWARE(Multi_Store* store, const char** strArr){
 	printf("label: %s offset: %08X\n", strArr[1], store->offset);
+	store->add_label_key(store, strArr[1]);
 	store->add_label(store, strArr[1], (TEXT_SECTION_BASE_ADDRESS + store->offset));
 }
 

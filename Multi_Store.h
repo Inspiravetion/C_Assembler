@@ -22,6 +22,11 @@ struct _Multi_Store{
 	Store* immediate_store;
 	Store* register_store;
 	Store* label_store;
+	int label_keys_capacity;
+	int label_keys_usage;
+	char ** label_keys;
+	char** (*get_label_keys)(Multi_Store* self);	
+	void (*add_label_key)(Multi_Store* self, char* key);
     void (*add_array)(Multi_Store* self, const char* key, int* val, int length);
     void (*add_label)(Multi_Store* self, const char* key, int val);
     void (*add_string)(Multi_Store* self, const char* key, const char* val);

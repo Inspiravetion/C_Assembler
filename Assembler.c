@@ -4,7 +4,6 @@
 //from RESOLVE_EXP()
 //handle command line...test
 //be able to dump the .data section...be glad you didn't delete all that other code
-//fix offset calculation...middleware more than likely
 
 
 void Store_Symbols(IO* io, Multi_Store* store){
@@ -39,6 +38,55 @@ void display_symbol_table(Multi_Store* store){
 	store->display_label_table(store);
 };
 
+void dump_array(Array_Bundle* bundle, IO* io){
+	int i = 0;
+	while(i < bundle->length){
+		printf("%s\n", intToBinaryString(bundle->array[i], 32));
+		i++;
+	}
+}
+
+void dump_string(char* string, IO* io){
+	int length = strlen(string);
+	int i = 0;
+	int count = 0;
+	char* line = (char*) New_Array(sizeof(char), 33);
+	while(i < length){
+		strcat(line, intToBinaryString((int) string[i], 8));
+		printf("%c\n", string[i]);
+		count = (count++ % 4);
+		if(count == 4){
+			printf("%s\n", line);
+			line = (char*) New_Array(sizeof(char), 33);
+		}
+		i++;
+	}
+	//do something with length of line for padding 0000
+	//should be 4...for 4 - length concatenate 0000 to the end
+
+}
+
+void dump_immediate(int imm, IO* io){
+
+}
+
+void dump_data_section(Multi_Store* store, IO* io){
+	char** labels = store->get_label_keys(store);
+	int i = 0;
+	Array_Bundle* bundle;
+	char* result;
+	while(i < store->label_keys_usage){
+		printf("%d : %s\n", i, labels[i]);
+		if(bundle = store->get_array(store, labels[i])){
+			dump_array(bundle, io);
+		}
+		else if(result = store->get_string(store, labels[i])){
+			dump_string(result, io);
+		}
+		i++;
+	}
+}
+
 
 int main(int argc, char* argv[]){
 	IO* io = New_IO("adder.txt", "r", "writefile.txt", "w");
@@ -49,6 +97,7 @@ int main(int argc, char* argv[]){
 	Store_Symbols(io, store);
 
 	display_symbol_table(store);
+	dump_data_section(store, io);
 
 	char* instr;
 	char* binInstr;
@@ -56,8 +105,7 @@ int main(int argc, char* argv[]){
 		int i = 0;
 		while(i < INSTRUCTION_COUNT){
 			if(binInstr = (char*)(sifters[i])->Sift(sifters[i], instr)){
-				printf("%s\n", binInstr);
-				// io->print(io, instr); //not perminent
+				// printf("%s\n", binInstr);
 				io->print(io, binInstr);
 				break;
 			}

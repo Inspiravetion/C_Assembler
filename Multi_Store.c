@@ -87,6 +87,19 @@ void increment_offset(Multi_Store* self, int increment){
 	self->offset += increment;
 }
 
+void add_label_key(Multi_Store* self, char* key){
+	if(self->label_keys_usage == self->label_keys_capacity){
+		Extend_Array(self->label_keys, sizeof(char*), self->label_keys_capacity* 2);
+		self->label_keys_capacity *= 2;
+	}
+	self->label_keys[self->label_keys_usage] = key;
+	self->label_keys_usage++;
+}
+
+char** get_label_keys(Multi_Store* self){
+	return self->label_keys;
+}
+
 Multi_Store* New_Multi_Store(){
 	Multi_Store* store      = (Multi_Store*) malloc(sizeof(Multi_Store));
 	store->array_store      = New_Store();
@@ -106,7 +119,13 @@ Multi_Store* New_Multi_Store(){
 	store->get_label        = &get_label;
 	store->reset_offset     = &reset_offset;
 	store->increment_offset = &increment_offset;
-	store->display_label_table = &display_label_table;
+	store->display_label_table      = &display_label_table;
+	store->add_label_key            = &add_label_key;
+	store->get_label_keys			= &get_label_keys;
+	store->offset                   = 0;
+	store->label_keys               = (char**) New_Array(sizeof(char*), 10);
+	store->label_keys_capacity      = 10;
+	store->label_keys_usage         = 0;
 	Register_Disposable(store);
 	return store;
 };

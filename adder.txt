@@ -25,6 +25,6 @@ loop:
  li $v0, 10 # system call to terminate program 
  syscall # make call 
 .data 
-array: .word 0:10 # array of 10 words, initialized to 0 
+array: .word 31:10 # array of 10 words, initialized to 0 
 array_size: .word 10 # integer, initialized to 10 
 message: .asciiz "The sum of numbers in array is: "
