@@ -42,6 +42,7 @@ void dump_array(Array_Bundle* bundle, IO* io){
 	int i = 0;
 	while(i < bundle->length){
 		printf("%s\n", intToBinaryString(bundle->array[i], 32));
+		io->print(io, intToBinaryString(bundle->array[i], 32));
 		i++;
 	}
 }
@@ -50,27 +51,45 @@ void dump_string(char* string, IO* io){
 	int length = strlen(string);
 	int i = 0;
 	int count = 0;
+	char** temp_container = (char**) New_Array(sizeof(char*), 4);
 	char* line = (char*) New_Array(sizeof(char), 33);
 	while(i < length){
-		strcat(line, intToBinaryString((int) string[i], 8));
-		printf("%c\n", string[i]);
+		temp_container[i % 4] = intToBinaryString((int) string[i], 8);
 		count = (count++ % 4);
 		if(count == 4){
+			strcat(line, temp_container[3]);
+			strcat(line, temp_container[2]);
+			strcat(line, temp_container[1]);
+			strcat(line, temp_container[0]);
 			printf("%s\n", line);
+			io->print(io, line);
 			line = (char*) New_Array(sizeof(char), 33);
 		}
 		i++;
 	}
-	//do something with length of line for padding 0000
-	//should be 4...for 4 - length concatenate 0000 to the end
-
+	if(length % 4 > 0){
+		int j = 0;
+		while(j < 4 - (length % 4)){
+			temp_container[i % 4] = "00000000";
+			i++;
+			j++;
+		}
+		strcat(line, temp_container[3]);
+		strcat(line, temp_container[2]);
+		strcat(line, temp_container[1]);
+		strcat(line, temp_container[0]);
+		printf("%s\n", line);
+		io->print(io, line);
+	}
 }
 
 void dump_immediate(int imm, IO* io){
-
+	printf("%s\n", intToBinaryString(imm, 32));
+	io->print(io, intToBinaryString(imm, 32));
 }
 
 void dump_data_section(Multi_Store* store, IO* io){
+	io->print(io, "");
 	char** labels = store->get_label_keys(store);
 	int i = 0;
 	Array_Bundle* bundle;
@@ -82,6 +101,9 @@ void dump_data_section(Multi_Store* store, IO* io){
 		}
 		else if(result = store->get_string(store, labels[i])){
 			dump_string(result, io);
+		}
+		else if((result = store->get_immediate(store, labels[i])) != -1) {
+			dump_immediate(result, io);
 		}
 		i++;
 	}
@@ -97,7 +119,6 @@ int main(int argc, char* argv[]){
 	Store_Symbols(io, store);
 
 	display_symbol_table(store);
-	dump_data_section(store, io);
 
 	char* instr;
 	char* binInstr;
@@ -112,6 +133,9 @@ int main(int argc, char* argv[]){
 			i++;
 		}
 	}
+
+	dump_data_section(store, io);
+
 
 	/*
 	int* arr = (int*) New_Array(sizeof(int), 10);

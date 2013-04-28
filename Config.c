@@ -611,6 +611,7 @@ void STORE_STRING_MIDDLEWARE(Multi_Store* store, const char** strArr){
 }
 
 void STORE_IMMEDIATE_MIDDLEWARE(Multi_Store* store, const char** strArr){
+	printf("immediate labe;: %s value %d\n", strArr[1], atoi(strArr[2]));
 	store->add_immediate(store, strArr[1], atoi(strArr[2]));
 	store->add_label(store, strArr[1], (DATA_SECTION_BASE_ADDRESS + store->offset));
 	store->add_label_key(store, strArr[1]);
