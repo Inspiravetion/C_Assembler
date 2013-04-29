@@ -105,6 +105,7 @@ void dump_data_section(Multi_Store* store, IO* io){
 }
 
 void print_instructions(Multi_Store* store, IO* io, Sifter* trimmer){
+	store->reset_offset(store);
 	Sifter** sifters = Config_Text_Sifters(store);
 	char* instr;
 	char* binInstr;
@@ -113,6 +114,7 @@ void print_instructions(Multi_Store* store, IO* io, Sifter* trimmer){
 		while(i < INSTRUCTION_COUNT){
 			if(binInstr = (char*)(sifters[i])->Sift(sifters[i], instr)){
 				io->print(io, binInstr);
+				store->increment_offset(store, (strlen(binInstr) / 8));
 				break;
 			}
 			i++;
