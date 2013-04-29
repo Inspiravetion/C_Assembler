@@ -4,7 +4,11 @@
 //from RESOLVE_EXP()
 //handle command line...test
 //handle blt and ble...gunna have to sift for them when you store the label
-//offsets because they will cause the increment to be 8 not 4
+	//offsets because they will cause the increment to be 8 not 4
+//have to change what get_immediate returns so that -1 can be supported
+//recognizing "\0" as a valid string (two null terminators)
+//being able to store hex as an immediate
+//might have to add 1 instead of sub 1 from positive offset
 
 void Store_Symbols(IO* io, Multi_Store* store, Sifter*  trimmer){
 	io->seek_pattern(io, New_Sifter(store, BEG_OF_FILE, &RETURN_KEY));
@@ -87,18 +91,18 @@ void dump_data_section(Multi_Store* store, IO* io){
 	io->print(io, "");
 	char** labels = store->get_label_keys(store);
 	int i = 0;
-	Array_Bundle* bundle;
+	Array_Bundle* arrResult;
 	char* strResult;
-	int intResult;
+	Immediate_Bundle* intResult;
 	while(i < store->label_keys_usage){
-		if(bundle = store->get_array(store, labels[i])){
-			dump_array(bundle, io);
+		if(arrResult = store->get_array(store, labels[i])){
+			dump_array(arrResult, io);
 		}
 		else if(strResult = store->get_string(store, labels[i])){
 			dump_string(strResult, io);
 		}
-		else if((intResult = store->get_immediate(store, labels[i])) != -1) {
-			dump_immediate(intResult, io);
+		else if((intResult = store->get_immediate(store, labels[i]))->success) {
+			dump_immediate(intResult->value, io);
 		}
 		i++;
 	}

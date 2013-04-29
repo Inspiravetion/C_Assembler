@@ -14,6 +14,14 @@ Array_Bundle* New_Array_Bundle(int* arr, int len){
 	return bundle;
 }
 
+Immediate_Bundle* New_Immediate_Bundle(int imm, bool succ){
+	Immediate_Bundle* bundle = (Immediate_Bundle*) malloc(sizeof(Immediate_Bundle));
+	bundle->value = imm;
+	bundle->success = succ;
+	Register_Disposable(bundle);
+	return bundle;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // 																			 //
 // Multi_Store Functions													 //
@@ -57,10 +65,12 @@ const char* get_string(Multi_Store* self, const char* key){
 		self->string_store->get(self->string_store, key);
 };
 
-int get_immediate(Multi_Store* self, const char* key){
+Immediate_Bundle get_immediate(Multi_Store* self, const char* key){
 	int* intptr = (int*) 
 		self->immediate_store->get(self->immediate_store, key);
-	return intptr ? intptr[0] : -1;
+	return intptr ? 
+		New_Immediate_Bundle(intptr[0], true): 
+		New_Immediate_Bundle(-1, false);
 };
 
 int get_register(Multi_Store* self, const char* key){
