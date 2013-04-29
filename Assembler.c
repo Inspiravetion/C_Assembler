@@ -5,7 +5,6 @@
 //handle command line...test
 //handle blt and ble...gunna have to sift for them when you store the label
 	//offsets because they will cause the increment to be 8 not 4
-//have to change what get_immediate returns so that -1 can be supported
 //recognizing "\0" as a valid string (two null terminators)
 //being able to store hex as an immediate
 //might have to add 1 instead of sub 1 from positive offset
@@ -25,8 +24,8 @@ void Store_Symbols(IO* io, Multi_Store* store, Sifter*  trimmer){
 		int i = 0;
 		while(i < DATA_TYPE_COUNT){
 			if(sifters[i]->Sift(sifters[i], result)){
-				isInstr = false;
 				printf("%s\n", result);
+				isInstr = false;
 				break;
 			}
 			i++;

@@ -27,4 +27,4 @@ loop:
 .data 
 array: .word 0:10 # array of 10 words, initialized to 0 
 array_size: .word -1 # integer, initialized to 10 
-message: .asciiz "The sum of numbers in array is: "
+message: .asciiz "The sum of numbers in array is: \0"
