@@ -23,6 +23,7 @@ struct _IO{
 };
 
 void Clean_Up_IO(IO* io);
+bool is_just_space(char* string);
 
 IO* New_IO(char* fileIn, char* inFlags, char* fileOut, char* outFlags);
 

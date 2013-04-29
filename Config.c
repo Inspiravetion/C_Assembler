@@ -89,6 +89,9 @@ const char* IS_REG_WITH_OFFSET(Multi_Store* store, const char** args, size_t siz
 }
 
 const char* IS_IMM(Multi_Store* store, const char** args, size_t size){
+	if(is_just_space(args[1])){
+		return NULL;
+	}
 	int value = atoi(args[1]);
 	return intToBinaryString(value, INT_LENGTH);
 }
@@ -114,7 +117,7 @@ const char* RESOLVE_EXP(Multi_Store* store, const char* exp, int maxLen){
 	else{
 		int address = store->get_label(store, exp);
 		if(address != -1){
-			printf("%s : %s\n", exp, intToBinaryString(address, maxLen));
+			printf("label %s : %s\n", exp, intToBinaryString(address, maxLen));
 			return intToBinaryString(address, maxLen);
 		}
 	}
@@ -291,7 +294,11 @@ const char* BNE_FUNC(Multi_Store* store, const char** args, size_t size){
 }
 
 const char* BLTZ_FUNC(Multi_Store* store, const char** args, size_t size){
-	int offset = (((strtol(RESOLVE_EXP(store, args[3], 16), NULL, 2) - store->offset) / 4) - 1);
+	int offset = ((strtol(RESOLVE_EXP(store, args[2], 16), NULL, 2) - store->offset) / 4);
+	printf("bltz: offset = %d target = %s\n", store->offset, args[2]);
+	if(offset < 0){
+		offset--;
+	}
 	I_Type* instr = (I_Type*) New_I_Type(
 		BLTZ_OPCODE, 
 		NULL,
@@ -303,7 +310,7 @@ const char* BLTZ_FUNC(Multi_Store* store, const char** args, size_t size){
 }
 
 const char* BLEZ_FUNC(Multi_Store* store, const char** args, size_t size){
-	int offset = (((strtol(RESOLVE_EXP(store, args[3], 16), NULL, 2) - store->offset) / 4) - 1);
+	int offset = (((strtol(RESOLVE_EXP(store, args[2], 16), NULL, 2) - store->offset) / 4) - 1);
 	I_Type* instr = (I_Type*) New_I_Type(
 		BLEZ_OPCODE,
 		NULL, 
@@ -469,9 +476,10 @@ const char* LI_FUNC(Multi_Store* store, const char** args, size_t size){
 
 //J_Types----------------------------------------------------------------------
 const char* JAL_FUNC(Multi_Store* store, const char** args, size_t size){
+	int address = strtol(RESOLVE_EXP(store, args[1], 26), NULL, 2) >> 2;
 	J_Type* instr = (J_Type*) New_J_Type(
 		JAL_OPCODE, 
-		RESOLVE_EXP(store, args[1], 26)
+		intToBinaryString(address, 26)
 	);
 	return instr->toString(instr);
 }

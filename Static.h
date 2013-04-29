@@ -55,10 +55,11 @@
 
 /**
  * Processing Helpers
+ * [[.-.][:digit:]]+
  */
 #define IS_REG_REGEX "(\\$.*)"
 #define IS_REG_WITH_OFFSET_REGEX "([[:digit:]]+)\\((\\$.*)\\)"
-#define IS_IMM_REGEX "([[.-.][:digit:]]+)"
+#define IS_IMM_REGEX "([[.-.][:space:][:digit:]]*)"
 #define DATA_SECTION_REGEX "[[:space:]]*\\.data[[:space:]]*"
 
 /**
