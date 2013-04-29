@@ -3,8 +3,6 @@
 //figure out of the IS_REG_WITH_OFFSET should be removed
 //from RESOLVE_EXP()
 //handle command line...test
-//handle blt and ble...gunna have to sift for them when you store the label
-	//offsets because they will cause the increment to be 8 not 4
 //recognizing "\0" as a valid string (two null terminators)
 //being able to store anything within the "" of a data section
 //might have to add 1 instead of sub 1 from positive offset
@@ -12,6 +10,7 @@
 void Store_Symbols(IO* io, Multi_Store* store, Sifter*  trimmer){
 	io->seek_pattern(io, New_Sifter(store, BEG_OF_FILE, &RETURN_KEY));
 	Sifter** sifters = Config_Data_Sifters(store);
+	Sifter** doubleSifters = Config_Double_Sifters(store);
 	char* result;
 	bool isInstr;
 	bool inTextSection = true;
@@ -31,7 +30,21 @@ void Store_Symbols(IO* io, Multi_Store* store, Sifter*  trimmer){
 			i++;
 		}
 		if(inTextSection && isInstr){
-			store->increment_offset(store, 4);
+			int j = 0;
+			bool twoLines = false;
+			while(j < DOUBLE_INSTRUCTION_COUNT){
+				if(doubleSifters[j]->Sift(doubleSifters[j], result)){
+					twoLines = true;
+					break;
+				}
+				j++;
+			}
+			if(twoLines){
+				store->increment_offset(store, 8);
+			}
+			else{
+				store->increment_offset(store, 4);									
+			}
 		}
 	}
 	io->in_rewind(io);

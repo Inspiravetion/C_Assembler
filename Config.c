@@ -654,3 +654,15 @@ Sifter** Config_Data_Sifters(Multi_Store* store){
 
 	return sifters;
 }
+
+Sifter** Config_Double_Sifters(Multi_Store* store){
+	Sifter** sifters = (Sifter**) New_Array(sizeof(Sifter*), DOUBLE_INSTRUCTION_COUNT);
+	int i = 0;
+
+	sifters[i] = New_Sifter(store, BLT_REGEX, &BLT_FUNC);
+	i++;
+
+	sifters[i] = New_Sifter(store, BLE_REGEX, &BLE_FUNC);
+
+	return sifters;
+}

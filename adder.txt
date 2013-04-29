@@ -5,6 +5,8 @@
 # of all the entries in the array. 
 .text 
 main: 
+ ble $a0, $a0, array
+ blt $a0, $a0, array 
  la $a0, array # load address of array 
  la $a1, array_size # load address of array_size 
  lw $a1, 0($a1) # load value of array_size variable 
