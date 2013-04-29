@@ -477,9 +477,10 @@ const char* JAL_FUNC(Multi_Store* store, const char** args, size_t size){
 }
 
 const char* J_FUNC(Multi_Store* store, const char** args, size_t size){
+	int address = strtol(RESOLVE_EXP(store, args[1], 26), NULL, 2) >> 2;
 	J_Type* instr = (J_Type*) New_J_Type(
 		J_OPCODE, 
-		RESOLVE_EXP(store, args[1], 26)
+		intToBinaryString(address, 26)
 	);
 	return instr->toString(instr);
 }

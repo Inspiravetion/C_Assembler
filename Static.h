@@ -68,7 +68,7 @@
 #define STRING_DATA_REGEX "[[:space:]]*(.*):[[:space:]]*\\.asciiz[[:space:]]*\"(.*)\"*"
 #define IMMEDIATE_DATA_REGEX "[[:space:]]*(.*):[[:space:]]*\\.word[[:space:]]*(.*)"
 #define LABEL_REGEX "[[:space:]]*(.*):[[:space:]]*"
-#define HASH_COMMENT_TRIMMER_REGEX "[[:space:]]*([$(),:.\\\"_[.-.][:space:][:alpha:][:digit:]]*)"
+#define HASH_COMMENT_TRIMMER_REGEX "([$(),:.\\\"_[.-.][:space:][:alpha:][:digit:]]*)"
 #define BEG_OF_FILE "[[:space:]]*(\\.text)"
 
 ///////////////////////////////////////////////////////////////////////////////

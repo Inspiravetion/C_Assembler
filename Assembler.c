@@ -23,7 +23,7 @@ void Store_Symbols(IO* io, Multi_Store* store, Sifter*  trimmer){
 		int i = 0;
 		while(i < DATA_TYPE_COUNT){
 			if(sifters[i]->Sift(sifters[i], result)){
-				printf("%s\n", result);
+				printf("%s : %d\n", result, store->offset);
 				isInstr = false;
 				break;
 			}
@@ -141,7 +141,7 @@ void print_instructions(Multi_Store* store, IO* io, Sifter* trimmer){
 
 
 int main(int argc, char* argv[]){
-	IO* io = New_IO("adder.txt", "r", "writefile.txt", "w");
+	IO* io = New_IO("simple_math.asm", "r", "writefile.txt", "w");
 	Multi_Store* store = New_Multi_Store();
 	Sifter* trimmer = New_Sifter(store, HASH_COMMENT_TRIMMER_REGEX, &RETURN_KEY);
 	store_registers(store);

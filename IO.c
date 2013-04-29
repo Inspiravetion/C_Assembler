@@ -1,11 +1,26 @@
 #include "IO.h"
 
+bool is_just_space(char* string){
+	bool is_space = true;
+	int i = 0;
+	while(string[i]){
+		if(!isspace(string[i])){
+			return false;
+		}
+		i++;
+	}
+	return true;
+}
+
 char* readline(IO* io, Sifter* trimmer){
 	if(io->in){
 		char* container = (char*) New_Array(sizeof(char), LINE_MAX);
 		if(fgets(container, LINE_MAX, io->in)){
 			if(trimmer){
 				container = trimmer->Sift(trimmer, container);	
+				if(is_just_space(container)){
+					return readline(io, trimmer);
+				}
 			}
 			int end = strlen(container) - 1;
 			if(container[end] = '\n'){
