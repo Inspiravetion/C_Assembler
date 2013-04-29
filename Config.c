@@ -42,11 +42,12 @@ void store_registers(Multi_Store* store){
 const char* IS_REG(Multi_Store* store, const char** args, size_t size);
 const char* IS_REG_WITH_OFFSET(Multi_Store* store, const char** args, size_t size);
 const char* IS_IMM(Multi_Store* store, const char** args, size_t size);
+const char* SPACE_TRIM(Multi_Store* store, const char** args, size_t size);
 
 Sifter** EXP_SIFTERS = NULL;
 
 void init_exp_sifters(Multi_Store* store){
-	Sifter** sifters = (Sifter**) New_Array(sizeof(Sifter*), 3);
+	Sifter** sifters = (Sifter**) New_Array(sizeof(Sifter*), 4);
 	int i = 0;
 
 	sifters[i] = New_Sifter(store, IS_REG_WITH_OFFSET_REGEX, &IS_REG_WITH_OFFSET);
@@ -56,6 +57,9 @@ void init_exp_sifters(Multi_Store* store){
 	i++;
 
 	sifters[i] = New_Sifter(store, IS_IMM_REGEX, &IS_IMM);
+	i++;
+
+	sifters[i] = New_Sifter(store, SPACE_TRIMMER_REGEX, &SPACE_TRIM);
 
 	EXP_SIFTERS = sifters;
 }
@@ -96,6 +100,11 @@ const char* IS_IMM(Multi_Store* store, const char** args, size_t size){
 	return intToBinaryString(value, INT_LENGTH);
 }
 
+const char* SPACE_TRIM(Multi_Store* store, const char** args, size_t size){
+	printf("space trimmer %s\n", args[1]);
+	return args[1];
+}
+
 const char* RESOLVE_EXP(Multi_Store* store, const char* exp, int maxLen){
 	const char* result;
 	if(result = EXP_SIFTERS[0]->Sift(EXP_SIFTERS[0], exp)){
@@ -115,6 +124,7 @@ const char* RESOLVE_EXP(Multi_Store* store, const char* exp, int maxLen){
 		return trimmedString;
 	}
 	else{
+		exp = EXP_SIFTERS[3]->Sift(EXP_SIFTERS[3], exp);
 		int address = store->get_label(store, exp);
 		if(address != -1){
 			printf("label %s : %s\n", exp, intToBinaryString(address, maxLen));
@@ -294,11 +304,7 @@ const char* BNE_FUNC(Multi_Store* store, const char** args, size_t size){
 }
 
 const char* BLTZ_FUNC(Multi_Store* store, const char** args, size_t size){
-	int offset = ((strtol(RESOLVE_EXP(store, args[2], 16), NULL, 2) - store->offset) / 4);
-	printf("bltz: offset = %d target = %s\n", store->offset, args[2]);
-	if(offset < 0){
-		offset--;
-	}
+	int offset = (((strtol(RESOLVE_EXP(store, args[2], 16), NULL, 2) - store->offset) / 4) - 1);
 	I_Type* instr = (I_Type*) New_I_Type(
 		BLTZ_OPCODE, 
 		NULL,
@@ -485,6 +491,7 @@ const char* JAL_FUNC(Multi_Store* store, const char** args, size_t size){
 }
 
 const char* J_FUNC(Multi_Store* store, const char** args, size_t size){
+	printf("j: %s\n", RESOLVE_EXP(store, args[1], 26));
 	int address = strtol(RESOLVE_EXP(store, args[1], 26), NULL, 2) >> 2;
 	J_Type* instr = (J_Type*) New_J_Type(
 		J_OPCODE, 
