@@ -8,45 +8,44 @@
 /**
  * R_Type Instruction RegExps (3 params)
  */
-#define ADD_REGEX "add[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)[[:space:]]*\\#*.*"
-#define SUB_REGEX "sub[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)[[:space:]]*\\#*.*"
-#define OR_REGEX "or[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)[[:space:]]*\\#*.*"
-#define AND_REGEX "and[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)[[:space:]]*\\#*.*"
-#define SLT_REGEX "slt[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)[[:space:]]*\\#*.*"
-#define SLL_REGEX "sll[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
-#define SRL_REGEX "srl[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
-#define JR_REGEX "jr[[:space:]](.*)[[:space:]]*#*"//rt, sa, and rd = 00000
+#define ADD_REGEX "add[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+#define SUB_REGEX "sub[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+#define OR_REGEX "or[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+#define AND_REGEX "and[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+#define SLT_REGEX "slt[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+#define SLL_REGEX "sll[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+#define SRL_REGEX "srl[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+#define JR_REGEX "jr[[:space:]](.*)"//rt, sa, and rd = 00000
 
 // (\\#.*)?
 /**
  * I_Type Instruction RegExps (all digits are 16 bit immediates)
  */
-#define ADDI_REGEX "addi[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
-#define ADDIU_REGEX "addiu[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
-#define ORI_REGEX "ori[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
-#define ANDI_REGEX "andi[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
-#define SLTI_REGEX "slti[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
-#define BEQ_REGEX "beq[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
-#define BNE_REGEX "bne[[:space:]](.*),[[:space:]](.*),[[:space:]](([$()_[:alpha:][:digit:]]*))[[:space:]]*\\#*.*"
-#define BLT_REGEX "blt[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
-#define BLE_REGEX "ble[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
-#define BLEZ_REGEX "blez[[:space:]](.*),[[:space:]]([[:digit:]]+)" //rt defaults to 00000
-#define BLTZ_REGEX "bltz[[:space:]](.*),[[:space:]]([[:digit:]]+)" //rt defaults to 00000
-#define LUI_REGEX "lui[[:space:]](.*),[[:space:]]([[:digit:]]+)" //rd defaults to 00000
+#define ADDI_REGEX "addi[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+#define ADDIU_REGEX "addiu[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+#define ORI_REGEX "ori[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+#define ANDI_REGEX "andi[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+#define SLTI_REGEX "slti[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+
+#define BEQ_REGEX "beq[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+#define BNE_REGEX "bne[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+#define BLT_REGEX "blt[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+#define BLE_REGEX "ble[[:space:]](.*),[[:space:]](.*),[[:space:]](.*)"
+#define BLEZ_REGEX "blez[[:space:]](.*),[[:space:]](.*)" //rt defaults to 00000
+#define BLTZ_REGEX "bltz[[:space:]](.*),[[:space:]](.*)" //rt defaults to 00000
+
+#define LUI_REGEX "lui[[:space:]](.*),[[:space:]](.*)" //rd defaults to 00000
 #define LW_REGEX "lw[[:space:]](.*),[[:space:]]([[:digit:]]+)\\((.*)\\)"
 #define SW_REGEX "sw[[:space:]](.*),[[:space:]]([[:digit:]]+)\\((.*)\\)"
-#define LA_REGEX "la[[:space:]](.*),[[:space:]]([_[:alpha:][:digit:]]*)[[:space:]]*\\#*.*"
-	//look up address of label and if it is <= 16 bits => addi rd, 00000, label 
-	//else => lui rd, label(31:16) => ori rd, rd, label(15:0)
-#define LI_REGEX "li[[:space:]](.*),[[:space:]]([[:digit:]]+)"
-	//if immediate is <= 16 bits => addiu rd, 00000, immediate 
-	//else => lui rd, imm(31:16) => ori rd, rd, imm(15:0)
+#define LA_REGEX "la[[:space:]](.*),[[:space:]](.*)"
+#define LI_REGEX "li[[:space:]](.*),[[:space:]](.*)"
+
 
 /**
  * J_Type Instruction RegExps (1 param)
  */
-#define JAL_REGEX "jal[[:space:]](.*)[[:space:]]*#*"
-#define J_REGEX "j[[:space:]](.*)[[:space:]]*#*"
+#define JAL_REGEX "jal[[:space:]](.*)"
+#define J_REGEX "j[[:space:]](.*)"
 
 /**
  * Special

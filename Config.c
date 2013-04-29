@@ -269,51 +269,48 @@ const char* SLTI_FUNC(Multi_Store* store, const char** args, size_t size){
 }
 
 const char* BEQ_FUNC(Multi_Store* store, const char** args, size_t size){
+	int offset = (((strtol(RESOLVE_EXP(store, args[3], 16), NULL, 2) - store->offset) / 4) - 1);
 	I_Type* instr = (I_Type*) New_I_Type(
 		BEQ_OPCODE, 
 		RESOLVE_EXP(store, args[2], 5), 
 		RESOLVE_EXP(store, args[1], 5), 
-		RESOLVE_EXP(store, args[3], 16)
+		//RESOLVE_EXP(store, args[3], 16)
+		intToBinaryString(offset, 16)
 	);
 	return instr->toString(instr);
 }
 
 const char* BNE_FUNC(Multi_Store* store, const char** args, size_t size){
-	printf("1: %s 2: %s 3: %s\n",args[1], args[2], args[3] );
 	int offset = (((strtol(RESOLVE_EXP(store, args[3], 16), NULL, 2) - store->offset) / 4) - 1);
 	I_Type* instr = (I_Type*) New_I_Type(
 		BNE_OPCODE, 
 		RESOLVE_EXP(store, args[2], 5), 
 		RESOLVE_EXP(store, args[1], 5), 
-		//use the store.get_offset() to figure out the offset from the current address
-		//make it signed(int) so it can know to go backwords
-		//gunna have to call store.reset_offset() at beginning of print instructions
-		//and call store.increment_offset(4) for every instruction you decode
 		intToBinaryString(offset, 16)
 	);
-		
-		printf("bne offset: %d\n", offset);
-
 	return instr->toString(instr);
 }
 
 const char* BLTZ_FUNC(Multi_Store* store, const char** args, size_t size){
+	int offset = (((strtol(RESOLVE_EXP(store, args[3], 16), NULL, 2) - store->offset) / 4) - 1);
 	I_Type* instr = (I_Type*) New_I_Type(
 		BLTZ_OPCODE, 
 		NULL,
 		RESOLVE_EXP(store, args[1], 5), 
-		RESOLVE_EXP(store, args[2], 16)
+		// RESOLVE_EXP(store, args[2], 16)
+		intToBinaryString(offset, 16)
 	);
 	return instr->toString(instr);
 }
 
-//Hardcoded to only take immediate...could be dangerous
 const char* BLEZ_FUNC(Multi_Store* store, const char** args, size_t size){
+	int offset = (((strtol(RESOLVE_EXP(store, args[3], 16), NULL, 2) - store->offset) / 4) - 1);
 	I_Type* instr = (I_Type*) New_I_Type(
 		BLEZ_OPCODE,
 		NULL, 
 		RESOLVE_EXP(store, args[1], 5), 
-		RESOLVE_EXP(store, args[2], 16)
+		// RESOLVE_EXP(store, args[2], 16)
+		intToBinaryString(offset, 16)
 	);
 	return instr->toString(instr);
 }

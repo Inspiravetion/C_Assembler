@@ -3,8 +3,8 @@
 //figure out of the IS_REG_WITH_OFFSET should be removed
 //from RESOLVE_EXP()
 //handle command line...test
-//be able to dump the .data section...be glad you didn't delete all that other code
-
+//handle blt and ble...gunna have to sift for them when you store the label
+//offsets because they will cause the increment to be 8 not 4
 
 void Store_Symbols(IO* io, Multi_Store* store, Sifter*  trimmer){
 	io->seek_pattern(io, New_Sifter(store, BEG_OF_FILE, &RETURN_KEY));
