@@ -136,7 +136,6 @@ const char* ADD_FUNC(Multi_Store* store, const char** args, size_t size){
 		RESOLVE_EXP(store, args[1], 5), 
 		NULL
 	);
-	printf("from add: %s\n", args[3]);
 	return instr->toString(instr);
 }
 
@@ -396,7 +395,6 @@ const char* SW_FUNC(Multi_Store* store, const char** args, size_t size){
 const char* LA_FUNC(Multi_Store* store, const char** args, size_t size){
 	char* rd = args[1];
 	char* label = args[2];
-	printf("from la: %s\n", label);
 	int address = store->get_label(store, label);
 	if(address == -1){
 		return "label is not indexed and thus could not be resolved...";

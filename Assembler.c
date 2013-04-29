@@ -26,6 +26,7 @@ void Store_Symbols(IO* io, Multi_Store* store, Sifter*  trimmer){
 		while(i < DATA_TYPE_COUNT){
 			if(sifters[i]->Sift(sifters[i], result)){
 				isInstr = false;
+				printf("%s\n", result);
 				break;
 			}
 			i++;

@@ -41,7 +41,7 @@ struct _Multi_Store{
     void (*add_register)(Multi_Store* self, const char* key, int val);
     Array_Bundle* (*get_array)(Multi_Store* self, const char* key);
     const char* (*get_string)(Multi_Store* self, const char* key);
-	Immediate_Bundle (*get_immediate)(Multi_Store* self, const char* key);
+	Immediate_Bundle* (*get_immediate)(Multi_Store* self, const char* key);
 	int (*get_register)(Multi_Store* self, const char* key);
 	int (*get_label)(Multi_Store* self, const char* key);
 	void (*reset_offset)(Multi_Store* self);

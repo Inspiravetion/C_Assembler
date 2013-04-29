@@ -65,7 +65,7 @@ const char* get_string(Multi_Store* self, const char* key){
 		self->string_store->get(self->string_store, key);
 };
 
-Immediate_Bundle get_immediate(Multi_Store* self, const char* key){
+Immediate_Bundle* get_immediate(Multi_Store* self, const char* key){
 	int* intptr = (int*) 
 		self->immediate_store->get(self->immediate_store, key);
 	return intptr ? 
