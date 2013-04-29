@@ -596,8 +596,8 @@ Sifter** Config_Text_Sifters(Multi_Store* store){
 
 void STORE_ARRAY_MIDDLEWARE(Multi_Store* store, const char** strArr){
 	const char* key = strArr[1];
-	int def_val = atoi(strArr[2]);
-	int size = atoi(strArr[3]);
+	int def_val = strtol(strArr[2], NULL, 0);
+	int size = strtol(strArr[3], NULL, 0);
 	int* value = (int*) New_Array(sizeof(int), size);
 	int i = 0;
 	while(i < size){
@@ -618,7 +618,7 @@ void STORE_STRING_MIDDLEWARE(Multi_Store* store, const char** strArr){
 }
 
 void STORE_IMMEDIATE_MIDDLEWARE(Multi_Store* store, const char** strArr){
-	store->add_immediate(store, strArr[1], atoi(strArr[2]));
+	store->add_immediate(store, strArr[1], strtol(strArr[2], NULL, 0));
 	store->add_label(store, strArr[1], (DATA_SECTION_BASE_ADDRESS + store->offset));
 	store->add_label_key(store, strArr[1]);
 	store->increment_offset(store, 4);

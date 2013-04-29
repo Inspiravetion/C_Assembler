@@ -6,7 +6,7 @@
 //handle blt and ble...gunna have to sift for them when you store the label
 	//offsets because they will cause the increment to be 8 not 4
 //recognizing "\0" as a valid string (two null terminators)
-//being able to store hex as an immediate
+//being able to store anything within the "" of a data section
 //might have to add 1 instead of sub 1 from positive offset
 
 void Store_Symbols(IO* io, Multi_Store* store, Sifter*  trimmer){
