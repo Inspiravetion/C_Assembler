@@ -106,6 +106,7 @@ const char* RESOLVE_EXP(Multi_Store* store, const char* exp, int maxLen){
 		return intToBinaryString(address, maxLen);
 	}
 	else if(result = EXP_SIFTERS[2]->Sift(EXP_SIFTERS[2], exp)){
+		printf("immediate %s\n", exp);
 		char* trimmedString = (char*) New_Array(sizeof(char), maxLen + 1);
 		strncat(trimmedString, (result + INT_LENGTH - maxLen), maxLen);
 		return trimmedString;
@@ -113,7 +114,7 @@ const char* RESOLVE_EXP(Multi_Store* store, const char* exp, int maxLen){
 	else{
 		int address = store->get_label(store, exp);
 		if(address != -1){
-			printf("%08X\n", address);
+			printf("%s : %s\n", exp, intToBinaryString(address, maxLen));
 			return intToBinaryString(address, maxLen);
 		}
 	}
@@ -135,6 +136,7 @@ const char* ADD_FUNC(Multi_Store* store, const char** args, size_t size){
 		RESOLVE_EXP(store, args[1], 5), 
 		NULL
 	);
+	printf("from add: %s\n", args[3]);
 	return instr->toString(instr);
 }
 
@@ -388,6 +390,7 @@ const char* SW_FUNC(Multi_Store* store, const char** args, size_t size){
 const char* LA_FUNC(Multi_Store* store, const char** args, size_t size){
 	char* rd = args[1];
 	char* label = args[2];
+	printf("from la: %s\n", label);
 	int address = store->get_label(store, label);
 	if(address == -1){
 		return "label is not indexed and thus could not be resolved...";
@@ -611,7 +614,6 @@ void STORE_STRING_MIDDLEWARE(Multi_Store* store, const char** strArr){
 }
 
 void STORE_IMMEDIATE_MIDDLEWARE(Multi_Store* store, const char** strArr){
-	printf("immediate labe;: %s value %d\n", strArr[1], atoi(strArr[2]));
 	store->add_immediate(store, strArr[1], atoi(strArr[2]));
 	store->add_label(store, strArr[1], (DATA_SECTION_BASE_ADDRESS + store->offset));
 	store->add_label_key(store, strArr[1]);
@@ -619,7 +621,6 @@ void STORE_IMMEDIATE_MIDDLEWARE(Multi_Store* store, const char** strArr){
 }
 
 void STORE_LABEL_MIDDLEWARE(Multi_Store* store, const char** strArr){
-	printf("label: %s offset: %08X\n", strArr[1], store->offset);
 	store->add_label_key(store, strArr[1]);
 	store->add_label(store, strArr[1], (TEXT_SECTION_BASE_ADDRESS + store->offset));
 }

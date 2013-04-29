@@ -6,10 +6,9 @@
 //be able to dump the .data section...be glad you didn't delete all that other code
 
 
-void Store_Symbols(IO* io, Multi_Store* store){
+void Store_Symbols(IO* io, Multi_Store* store, Sifter*  trimmer){
 	io->seek_pattern(io, New_Sifter(store, BEG_OF_FILE, &RETURN_KEY));
 	Sifter** sifters = Config_Data_Sifters(store);
-	Sifter* trimmer = New_Sifter(store, HASH_COMMENT_TRIMMER_REGEX, &RETURN_KEY);
 	char* result;
 	bool isInstr;
 	bool inTextSection = true;
@@ -41,7 +40,6 @@ void display_symbol_table(Multi_Store* store){
 void dump_array(Array_Bundle* bundle, IO* io){
 	int i = 0;
 	while(i < bundle->length){
-		printf("%s\n", intToBinaryString(bundle->array[i], 32));
 		io->print(io, intToBinaryString(bundle->array[i], 32));
 		i++;
 	}
@@ -61,7 +59,6 @@ void dump_string(char* string, IO* io){
 			strcat(line, temp_container[2]);
 			strcat(line, temp_container[1]);
 			strcat(line, temp_container[0]);
-			printf("%s\n", line);
 			io->print(io, line);
 			line = (char*) New_Array(sizeof(char), 33);
 		}
@@ -78,13 +75,11 @@ void dump_string(char* string, IO* io){
 		strcat(line, temp_container[2]);
 		strcat(line, temp_container[1]);
 		strcat(line, temp_container[0]);
-		printf("%s\n", line);
 		io->print(io, line);
 	}
 }
 
 void dump_immediate(int imm, IO* io){
-	printf("%s\n", intToBinaryString(imm, 32));
 	io->print(io, intToBinaryString(imm, 32));
 }
 
@@ -93,19 +88,35 @@ void dump_data_section(Multi_Store* store, IO* io){
 	char** labels = store->get_label_keys(store);
 	int i = 0;
 	Array_Bundle* bundle;
-	char* result;
+	char* strResult;
+	int intResult;
 	while(i < store->label_keys_usage){
-		printf("%d : %s\n", i, labels[i]);
 		if(bundle = store->get_array(store, labels[i])){
 			dump_array(bundle, io);
 		}
-		else if(result = store->get_string(store, labels[i])){
-			dump_string(result, io);
+		else if(strResult = store->get_string(store, labels[i])){
+			dump_string(strResult, io);
 		}
-		else if((result = store->get_immediate(store, labels[i])) != -1) {
-			dump_immediate(result, io);
+		else if((intResult = store->get_immediate(store, labels[i])) != -1) {
+			dump_immediate(intResult, io);
 		}
 		i++;
+	}
+}
+
+void print_instructions(Multi_Store* store, IO* io, Sifter* trimmer){
+	Sifter** sifters = Config_Text_Sifters(store);
+	char* instr;
+	char* binInstr;
+	while(instr = io->readline(io, trimmer)){
+		int i = 0;
+		while(i < INSTRUCTION_COUNT){
+			if(binInstr = (char*)(sifters[i])->Sift(sifters[i], instr)){
+				io->print(io, binInstr);
+				break;
+			}
+			i++;
+		}
 	}
 }
 
@@ -113,57 +124,16 @@ void dump_data_section(Multi_Store* store, IO* io){
 int main(int argc, char* argv[]){
 	IO* io = New_IO("adder.txt", "r", "writefile.txt", "w");
 	Multi_Store* store = New_Multi_Store();
-	Sifter** sifters = Config_Text_Sifters(store);
+	Sifter* trimmer = New_Sifter(store, HASH_COMMENT_TRIMMER_REGEX, &RETURN_KEY);
 	store_registers(store);
 	init_exp_sifters(store);
-	Store_Symbols(io, store);
+	Store_Symbols(io, store, trimmer);
 
 	display_symbol_table(store);
 
-	char* instr;
-	char* binInstr;
-	while(instr = io->readline(io, NULL)){
-		int i = 0;
-		while(i < INSTRUCTION_COUNT){
-			if(binInstr = (char*)(sifters[i])->Sift(sifters[i], instr)){
-				// printf("%s\n", binInstr);
-				io->print(io, binInstr);
-				break;
-			}
-			i++;
-		}
-	}
+	print_instructions(store, io, trimmer);	
 
 	dump_data_section(store, io);
-
-
-	/*
-	int* arr = (int*) New_Array(sizeof(int), 10);
-	int i = 0;
-	while(i < 10){
-		arr[i] = i;
-		i++;
-	}
-	const char* str = "String Arguments";
-	int imm = 1234;
-
-	Multi_Store store = *(New_Multi_Store());
-	store.add_array(&store, "array", arr, 10);
-	store.add_string(&store, "string", str);
-	store.add_immediate(&store, "immediate", imm);
-
-	Array_Bundle* arr_result = store.get_array(&store, "array");
-	int j = 0;
-	while(j < arr_result->length){
-		printf("%d : %d\n", j, arr_result->array[j]);
-		j++;
-	}
-
-	printf("%s\n", store.get_string(&store, "string"));
-	printf("%d\n", store.get_immediate(&store, "immediate"));
-
-	printf("this shouldnt work...%s\n", store.get_string(&store, "strdfging"));
-	printf("%d\n", store.get_immediate(&store, "immedsfdiate"));*/
 
 	Clean_Up_IO(io);
 	Clean_Up();

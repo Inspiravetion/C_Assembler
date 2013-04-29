@@ -1,13 +1,11 @@
 #include "IO.h"
 
 char* readline(IO* io, Sifter* trimmer){
-	//increasing the offset should not be in here
 	if(io->in){
 		char* container = (char*) New_Array(sizeof(char), LINE_MAX);
 		if(fgets(container, LINE_MAX, io->in)){
 			if(trimmer){
 				container = trimmer->Sift(trimmer, container);	
-				printf("%s\n", container);			
 			}
 			int end = strlen(container) - 1;
 			if(container[end] = '\n'){

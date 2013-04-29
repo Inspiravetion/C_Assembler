@@ -27,7 +27,7 @@
 #define ANDI_REGEX "andi[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
 #define SLTI_REGEX "slti[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
 #define BEQ_REGEX "beq[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
-#define BNE_REGEX "bne[[:space:]](.*),[[:space:]](.*),[[:space:]](([$()[:alpha:][:digit:]]*))[[:space:]]*\\#*.*"
+#define BNE_REGEX "bne[[:space:]](.*),[[:space:]](.*),[[:space:]](([$()_[:alpha:][:digit:]]*))[[:space:]]*\\#*.*"
 #define BLT_REGEX "blt[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
 #define BLE_REGEX "ble[[:space:]](.*),[[:space:]](.*),[[:space:]]([[:digit:]]+)"
 #define BLEZ_REGEX "blez[[:space:]](.*),[[:space:]]([[:digit:]]+)" //rt defaults to 00000
@@ -35,7 +35,7 @@
 #define LUI_REGEX "lui[[:space:]](.*),[[:space:]]([[:digit:]]+)" //rd defaults to 00000
 #define LW_REGEX "lw[[:space:]](.*),[[:space:]]([[:digit:]]+)\\((.*)\\)"
 #define SW_REGEX "sw[[:space:]](.*),[[:space:]]([[:digit:]]+)\\((.*)\\)"
-#define LA_REGEX "la[[:space:]](.*),[[:space:]]([[:alpha:][:digit:]]*)[[:space:]]*\\#*.*"
+#define LA_REGEX "la[[:space:]](.*),[[:space:]]([_[:alpha:][:digit:]]*)[[:space:]]*\\#*.*"
 	//look up address of label and if it is <= 16 bits => addi rd, 00000, label 
 	//else => lui rd, label(31:16) => ori rd, rd, label(15:0)
 #define LI_REGEX "li[[:space:]](.*),[[:space:]]([[:digit:]]+)"
