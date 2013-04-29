@@ -141,7 +141,7 @@ void print_instructions(Multi_Store* store, IO* io, Sifter* trimmer){
 
 
 int main(int argc, char* argv[]){
-	IO* io = New_IO("allops.asm", "r", "writefile.txt", "w");
+	IO* io = New_IO("bit_masks.asm", "r", "writefile.txt", "w");
 	Multi_Store* store = New_Multi_Store();
 	Sifter* trimmer = New_Sifter(store, HASH_COMMENT_TRIMMER_REGEX, &RETURN_KEY);
 	store_registers(store);

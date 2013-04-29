@@ -96,7 +96,8 @@ const char* IS_IMM(Multi_Store* store, const char** args, size_t size){
 	if(is_just_space(args[1])){
 		return NULL;
 	}
-	int value = atoi(args[1]);
+	int value = strtol(args[1], NULL, 0);
+	printf("arg : %s int value: %d\n", args[1], strtol(args[1], NULL, 0));
 	return intToBinaryString(value, INT_LENGTH);
 }
 
@@ -271,6 +272,7 @@ const char* ANDI_FUNC(Multi_Store* store, const char** args, size_t size){
 }
 
 const char* SLTI_FUNC(Multi_Store* store, const char** args, size_t size){
+	printf("%s\n", RESOLVE_EXP(store, args[3], 16));
 	I_Type* instr = (I_Type*) New_I_Type(
 		SLTI_OPCODE, 
 		RESOLVE_EXP(store, args[1], 5), 
