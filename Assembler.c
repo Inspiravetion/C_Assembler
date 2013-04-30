@@ -23,7 +23,6 @@ void Store_Symbols(IO* io, Multi_Store* store, Sifter*  trimmer){
 		int i = 0;
 		while(i < DATA_TYPE_COUNT){
 			if(sifters[i]->Sift(sifters[i], result)){
-				printf("%s : %d\n", result, store->offset);
 				isInstr = false;
 				break;
 			}
@@ -138,7 +137,6 @@ void print_instructions(Multi_Store* store, IO* io, Sifter* trimmer){
 		}
 	}
 }
-
 
 int main(int argc, char* argv[]){
 	IO* io = New_IO("bit_masks.asm", "r", "writefile.txt", "w");

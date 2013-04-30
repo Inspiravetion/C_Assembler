@@ -59,7 +59,8 @@
  */
 #define IS_REG_REGEX "(\\$.*)"
 #define IS_REG_WITH_OFFSET_REGEX "([[:digit:]]+)\\((\\$.*)\\)"
-#define IS_IMM_REGEX "([xX[.-.][:space:][:xdigit:]]*)"
+// #define IS_IMM_REGEX "([xX[.-.][:space:][:xdigit:]]*)"
+#define IS_IMM_REGEX "(-?[[:digit:]]*|0x[[:xdigit:]]*)"
 #define DATA_SECTION_REGEX "[[:space:]]*\\.data[[:space:]]*"
 #define SPACE_TRIMMER_REGEX "[[:space:]]*(.*)[[:space:]]*"
 

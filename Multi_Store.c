@@ -22,6 +22,35 @@ Immediate_Bundle* New_Immediate_Bundle(int imm, bool succ){
 	return bundle;
 }
 
+char* trim_whitespace(char* string){
+	bool frontDone = false;
+	bool backDone = false;
+	int b = strlen(string) - 1;
+	int f = 0;
+	while(!frontDone || !backDone){
+		if(!frontDone){
+			if(isspace(string[f])){
+				f++;
+			}
+			else{
+				frontDone = true;
+			}
+		}
+		if(!backDone){
+			if(isspace(string[b])){
+				b--;
+			}
+			else{
+				backDone = true;
+			}
+		}
+	}
+	char* retStrng = (char*) New_Array(sizeof(char), b - f + 2); 
+	strncpy(retStrng, string + f, b - f + 1);
+	retStrng[b-f+1] = '\0';
+	return retStrng;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // 																			 //
 // Multi_Store Functions													 //
@@ -50,6 +79,7 @@ void add_register(Multi_Store* self, const char* key, int val){
 };
 
 void add_label(Multi_Store* self, const char* key, int val){
+	// printf("add_label() key: -%s-\n", key);
 	int* intptr = (int*) New_Array(sizeof(int), 1);
 	intptr[0] = val;
 	self->label_store->put(self->label_store, key, (intptr_t) intptr);
@@ -57,17 +87,17 @@ void add_label(Multi_Store* self, const char* key, int val){
 
 Array_Bundle* get_array(Multi_Store* self, const char* key){
 	return (Array_Bundle*) 
-		self->array_store->get(self->array_store, key);
+		self->array_store->get(self->array_store, trim_whitespace(key));
 };
 
 const char* get_string(Multi_Store* self, const char* key){
 	return (const char*)
-		self->string_store->get(self->string_store, key);
+		self->string_store->get(self->string_store, trim_whitespace(key));
 };
 
 Immediate_Bundle* get_immediate(Multi_Store* self, const char* key){
 	int* intptr = (int*) 
-		self->immediate_store->get(self->immediate_store, key);
+		self->immediate_store->get(self->immediate_store, trim_whitespace(key));
 	return intptr ? 
 		New_Immediate_Bundle(intptr[0], true): 
 		New_Immediate_Bundle(-1, false);
@@ -75,13 +105,15 @@ Immediate_Bundle* get_immediate(Multi_Store* self, const char* key){
 
 int get_register(Multi_Store* self, const char* key){
 	int* intptr = (int*) 
-		self->register_store->get(self->register_store, key);
+		self->register_store->get(self->register_store, trim_whitespace(key));
 	return intptr ? intptr[0] : -1;
 }
 
 int get_label(Multi_Store* self, const char* key){
+	// printf("get_label() key: -%s-\n", trim_whitespace(key));
 	int* intptr = (int*) 
-		self->label_store->get(self->label_store, key);
+		self->label_store->get(self->label_store, trim_whitespace(key));
+	// printf("get_label()%08X\n", intptr[0]);
 	return intptr ? intptr[0] : -1;
 };
 

@@ -97,12 +97,10 @@ const char* IS_IMM(Multi_Store* store, const char** args, size_t size){
 		return NULL;
 	}
 	int value = strtol(args[1], NULL, 0);
-	printf("arg : %s int value: %d\n", args[1], strtol(args[1], NULL, 0));
 	return intToBinaryString(value, INT_LENGTH);
 }
 
 const char* SPACE_TRIM(Multi_Store* store, const char** args, size_t size){
-	printf("space trimmer %s\n", args[1]);
 	return args[1];
 }
 
@@ -111,24 +109,24 @@ const char* RESOLVE_EXP(Multi_Store* store, const char* exp, int maxLen){
 	if(result = EXP_SIFTERS[0]->Sift(EXP_SIFTERS[0], exp)){
 		//find out if this should return the binary representation of the
 		//register number plus the immediate or something else
-		printf("%s\n", "is ofset with register");
 		return result;
 	}
 	else if(result = EXP_SIFTERS[1]->Sift(EXP_SIFTERS[1], exp)){
+		// printf("Checking register store for:%s\n", exp);
 		int address = store->get_register(store, result);
 		return intToBinaryString(address, maxLen);
 	}
 	else if(result = EXP_SIFTERS[2]->Sift(EXP_SIFTERS[2], exp)){
-		printf("immediate %s\n", exp);
+		// printf("Checking immediate store for:%s\n", exp);
 		char* trimmedString = (char*) New_Array(sizeof(char), maxLen + 1);
 		strncat(trimmedString, (result + INT_LENGTH - maxLen), maxLen);
 		return trimmedString;
 	}
 	else{
 		exp = EXP_SIFTERS[3]->Sift(EXP_SIFTERS[3], exp);
+		// printf("Checking label store for: %s\n", exp);
 		int address = store->get_label(store, exp);
 		if(address != -1){
-			printf("label %s : %s\n", exp, intToBinaryString(address, maxLen));
 			return intToBinaryString(address, maxLen);
 		}
 	}
@@ -272,7 +270,6 @@ const char* ANDI_FUNC(Multi_Store* store, const char** args, size_t size){
 }
 
 const char* SLTI_FUNC(Multi_Store* store, const char** args, size_t size){
-	printf("%s\n", RESOLVE_EXP(store, args[3], 16));
 	I_Type* instr = (I_Type*) New_I_Type(
 		SLTI_OPCODE, 
 		RESOLVE_EXP(store, args[1], 5), 
@@ -493,7 +490,6 @@ const char* JAL_FUNC(Multi_Store* store, const char** args, size_t size){
 }
 
 const char* J_FUNC(Multi_Store* store, const char** args, size_t size){
-	printf("j: %s\n", RESOLVE_EXP(store, args[1], 26));
 	int address = strtol(RESOLVE_EXP(store, args[1], 26), NULL, 2) >> 2;
 	J_Type* instr = (J_Type*) New_J_Type(
 		J_OPCODE, 
@@ -629,6 +625,7 @@ void STORE_ARRAY_MIDDLEWARE(Multi_Store* store, const char** strArr){
 }
 
 void STORE_STRING_MIDDLEWARE(Multi_Store* store, const char** strArr){
+	printf("STORE_STRING_MIDDLEWARE() label: -%s-\n", strArr[1]);
 	store->add_string(store, strArr[1], strArr[2]);
 	store->add_label(store, strArr[1], (DATA_SECTION_BASE_ADDRESS + store->offset));
 	store->add_label_key(store, strArr[1]);
@@ -636,6 +633,7 @@ void STORE_STRING_MIDDLEWARE(Multi_Store* store, const char** strArr){
 }
 
 void STORE_IMMEDIATE_MIDDLEWARE(Multi_Store* store, const char** strArr){
+	printf("STORE_IMMEDIATE_MIDDLEWARE() label: -%s-\n", strArr[1]);
 	store->add_immediate(store, strArr[1], strtol(strArr[2], NULL, 0));
 	store->add_label(store, strArr[1], (DATA_SECTION_BASE_ADDRESS + store->offset));
 	store->add_label_key(store, strArr[1]);
@@ -643,6 +641,7 @@ void STORE_IMMEDIATE_MIDDLEWARE(Multi_Store* store, const char** strArr){
 }
 
 void STORE_LABEL_MIDDLEWARE(Multi_Store* store, const char** strArr){
+	printf("STORE_LABEL_MIDDLEWARE() label: -%s-\n", strArr[1]);
 	store->add_label_key(store, strArr[1]);
 	store->add_label(store, strArr[1], (TEXT_SECTION_BASE_ADDRESS + store->offset));
 }
