@@ -68,7 +68,7 @@
  * Data Store Helpers
  */
 #define ARRAY_DATA_REGEX "[[:space:]]*(.*):[[:space:]]*\\.word[[:space:]]*(.*):(.*)" 
-#define STRING_DATA_REGEX "[[:space:]]*(.*):[[:space:]]*\\.asciiz[[:space:]]*\"(.*)\"*"
+#define STRING_DATA_REGEX "[[:space:]]*(.*):[[:space:]]*\\.asciiz[[:space:]]*\"([^[.\".]]*)\"*"
 #define IMMEDIATE_DATA_REGEX "[[:space:]]*(.*):[[:space:]]*\\.word[[:space:]]*(.*)"
 #define LABEL_REGEX "[[:space:]]*(.*):[[:space:]]*"
 #define HASH_COMMENT_TRIMMER_REGEX "([$(),:.\\\"_[.-.][:space:][:alpha:][:digit:]]*)"

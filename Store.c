@@ -121,7 +121,7 @@ intptr_t get(Store* self, const char* key){
 
 void display(Store* store){
 	int i = 0;
-	printf(" %-s       |    %s\n", "Symbol", "Address");
+	printf("\n\n %-s       |    %s\n", "Symbol", "Address");
 	printf("---------------------------\n");
 	while(i < store->capacity){
 		if(store->table[i]){

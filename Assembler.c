@@ -63,6 +63,8 @@ void dump_array(Array_Bundle* bundle, IO* io){
 
 void dump_string(char* string, IO* io){
 	int length = strlen(string);
+	printf("-%s-\n", string);
+	printf("%d\n", length);
 	int i = 0;
 	int count = 0;
 	char** temp_container = (char**) New_Array(sizeof(char*), 4);
@@ -138,20 +140,39 @@ void print_instructions(Multi_Store* store, IO* io, Sifter* trimmer){
 	}
 }
 
-int main(int argc, char* argv[]){
-	IO* io = New_IO("bit_masks.asm", "r", "writefile.txt", "w");
-	Multi_Store* store = New_Multi_Store();
-	Sifter* trimmer = New_Sifter(store, HASH_COMMENT_TRIMMER_REGEX, &RETURN_KEY);
+void assemble(IO* io, Multi_Store* store, Sifter* trimmer){
 	store_registers(store);
 	init_exp_sifters(store);
 	Store_Symbols(io, store, trimmer);
-
-	display_symbol_table(store);
-
 	print_instructions(store, io, trimmer);	
-
 	dump_data_section(store, io);
+}
 
-	Clean_Up_IO(io);
+void show_symbols(IO* io, Multi_Store* store, Sifter* trimmer){
+	Store_Symbols(io, store, trimmer);
+	display_symbol_table(store);
+}
+
+int main(int argc, char* argv[]){
+	if(argc != 3){
+		printf("\n\nIncorrect number of arguments...\nCorrect Syntax:\n%s\nOR\n%s\n\n",
+			"assembler <input file> <output file>",
+			"assembler -symbols <input file>");
+		return 0;
+	}
+	Multi_Store* store = New_Multi_Store();
+	Sifter* trimmer = New_Sifter(store, HASH_COMMENT_TRIMMER_REGEX, &RETURN_KEY);
+	if(strcmp(argv[1], "-symbols") == 0){
+		printf("should be printing out stuff");
+		IO* io = New_IO(argv[2], "r", NULL, "w");
+		show_symbols(io, store, trimmer);
+		Clean_Up_IO(io);
+	}
+	else{
+		IO* io = New_IO(argv[1], "r", argv[2], "w");
+		assemble(io, store, trimmer);
+		Clean_Up_IO(io);
+	}
 	Clean_Up();
+	return 0;
 }
